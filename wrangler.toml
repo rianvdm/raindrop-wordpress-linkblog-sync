@@ -4,7 +4,8 @@ compatibility_date = "2024-01-01"
 
 [[kv_namespaces]]
 binding = "SYNC_STATE"
-id = "YOUR_KV_NAMESPACE_ID"
+id = "9ece47fdd41548f7ad9e20b1c493adda"
+preview_id = "b5960ba20661492b920ce691d32478d9"
 
 [vars]
 TRIGGER_TOKEN = "development-token"
