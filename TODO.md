@@ -97,23 +97,25 @@
 - [x] Test all error logging functionality
 
 ### Phase 8: Core Sync Logic (Prompt 8)
-- [ ] Create sync service
-- [ ] Implement bookmark fetching since last sync
-- [ ] Add deduplication checks
-- [ ] Implement post creation flow
-- [ ] Update last fetch timestamp
-- [ ] Add dry run mode support
-- [ ] Test full sync flow
-- [ ] Test partial failure handling
+- [x] Create sync orchestrator service
+- [x] Implement bookmark fetching since last sync
+- [x] Add deduplication checks
+- [x] Implement post creation flow
+- [x] Update last fetch timestamp
+- [x] Add dry run mode support
+- [x] Test full sync flow
+- [x] Fix sorting to fetch newest bookmarks first
+- [x] Add reset-timestamp utility endpoint with configurable days parameter
+- [x] Test partial failure handling
 
-### Phase 9: Trigger Endpoint Integration (Prompt 9)
-- [ ] Create trigger handler
-- [ ] Wire up to sync orchestrator
-- [ ] Add response formatting
-- [ ] Include sync statistics
-- [ ] Add execution logging
-- [ ] Test manual trigger flow
-- [ ] Test error responses
+### Phase 9: Trigger Endpoint Integration (Prompt 8 - Completed)
+- [x] Create trigger handler
+- [x] Wire up to sync orchestrator
+- [x] Add response formatting with sync statistics
+- [x] Include execution logging and duration tracking
+- [x] Add query parameter support (tag, limit, dry_run)
+- [x] Test manual trigger flow
+- [x] Test error responses
 
 ### Phase 10: Cron Handler (Prompt 10)
 - [ ] Create scheduled handler
