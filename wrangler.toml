@@ -9,3 +9,6 @@ preview_id = "b5960ba20661492b920ce691d32478d9"
 
 [vars]
 TRIGGER_TOKEN = "development-token"
+RAINDROP_TAG = "blog"
+# Add your Raindrop test token here:
+# RAINDROP_TOKEN = "your-test-token-here"

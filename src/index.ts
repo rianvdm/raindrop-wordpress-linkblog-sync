@@ -16,6 +16,33 @@ export default {
       return jsonResponse({ message: 'Sync triggered successfully' });
     }));
 
+    // Add a test endpoint to validate Raindrop connection
+    router.get('/test-raindrop', requireAuth(env)(async () => {
+      if (!env.RAINDROP_TOKEN) {
+        return errorResponse('RAINDROP_TOKEN not configured', 500);
+      }
+
+      try {
+        const { RaindropClient } = await import('./services/raindrop-client');
+        const client = new RaindropClient(env.RAINDROP_TOKEN);
+        const items = await client.fetchBookmarks(env.RAINDROP_TAG || 'blog');
+        
+        return jsonResponse({ 
+          success: true,
+          message: `Found ${items.length} bookmarks with tag "${env.RAINDROP_TAG || 'blog'}"`,
+          items: items.slice(0, 3).map(item => ({ // Show first 3 items
+            id: item._id,
+            title: item.title,
+            link: item.link,
+            created: item.created,
+            tags: item.tags
+          }))
+        });
+      } catch (error: any) {
+        return errorResponse(`Raindrop API error: ${error.message}`, 500);
+      }
+    }));
+
     try {
       return await router.handle(request);
     } catch (error) {
