@@ -47,6 +47,118 @@ export default {
       }
     }));
 
+    // Add a test endpoint to validate WordPress connection
+    router.get('/test-wordpress', requireAuth(env)(async () => {
+      if (!env.WP_USERNAME || !env.WP_APP_PASSWORD || !env.WP_ENDPOINT) {
+        return errorResponse('WordPress credentials not configured', 500);
+      }
+
+      try {
+        const { WordPressClient } = await import('./services/wordpress-client');
+        const { ContentBuilder } = await import('./services/content-builder');
+        
+        const client = new WordPressClient(env.WP_ENDPOINT, env.WP_USERNAME, env.WP_APP_PASSWORD);
+        const builder = new ContentBuilder();
+        
+        // Create a test post
+        const testContent = builder.buildPostContent(
+          'This is a test post created by the Raindrop sync worker to verify WordPress API connectivity.',
+          'Test Post - Raindrop Sync Worker',
+          'https://example.com'
+        );
+        
+        const payload = {
+          title: 'Test Post - Raindrop Sync Worker',
+          content: testContent,
+          status: 'draft' as const,
+          format: 'link' as const,
+        };
+        
+        const post = await client.createPost(payload);
+        
+        return jsonResponse({ 
+          success: true,
+          message: 'WordPress API test successful',
+          post: {
+            id: post.id,
+            title: post.title.rendered,
+            status: post.status,
+            format: post.format,
+            link: post.link
+          }
+        });
+      } catch (error: any) {
+        return errorResponse(`WordPress API error: ${error.message}`, 500);
+      }
+    }));
+
+    // Add an endpoint to view recent errors
+    router.get('/errors', requireAuth(env)(async (request) => {
+      try {
+        const { ErrorLogger } = await import('./services/error-logger');
+        const logger = new ErrorLogger(env.SYNC_STATE);
+        
+        const url = new URL(request.url);
+        const limitParam = url.searchParams.get('limit');
+        const limit = limitParam ? parseInt(limitParam, 10) : 50;
+        
+        const errors = await logger.getRecentErrors(Math.min(limit, 100)); // Cap at 100
+        
+        return jsonResponse({
+          success: true,
+          count: errors.length,
+          errors: errors.map(error => ({
+            timestamp: error.timestamp,
+            level: error.level,
+            message: error.message,
+            context: error.context,
+            // Don't include full stack traces in API response for brevity
+            hasStack: !!error.stack,
+          }))
+        });
+      } catch (error: any) {
+        return errorResponse(`Failed to retrieve errors: ${error.message}`, 500);
+      }
+    }));
+
+    // Add a test endpoint to generate sample errors for testing
+    router.get('/test-errors', requireAuth(env)(async () => {
+      try {
+        const { ErrorLogger } = await import('./services/error-logger');
+        const logger = new ErrorLogger(env.SYNC_STATE);
+        
+        // Generate some test errors
+        await logger.logError(new Error('Test API connection failure'), { 
+          operation: 'raindrop-fetch', 
+          endpoint: 'https://api.raindrop.io/rest/v1/raindrops',
+          userId: 'test-user'
+        });
+        
+        await logger.logWarning('Rate limit warning', { 
+          remaining: 15,
+          resetTime: new Date(Date.now() + 3600000).toISOString()
+        });
+        
+        await logger.logInfo('Sync completed successfully', {
+          itemsProcessed: 3,
+          duration: '2.5s'
+        });
+        
+        await logger.logError('WordPress authentication failed', {
+          operation: 'wordpress-post',
+          statusCode: 401,
+          endpoint: env.WP_ENDPOINT
+        });
+
+        return jsonResponse({ 
+          success: true,
+          message: 'Generated 4 test log entries (2 errors, 1 warning, 1 info)'
+        });
+      } catch (error: any) {
+        return errorResponse(`Failed to generate test errors: ${error.message}`, 500);
+      }
+    }));
+
     try {
       return await router.handle(request);
     } catch (error) {

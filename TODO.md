@@ -85,14 +85,16 @@
 - [x] Test link formatting
 - [x] Test HTML safety
 
-### Phase 7: Discord Error Reporter (Prompt 7)
-- [ ] Define Discord webhook types
-- [ ] Create Discord client
-- [ ] Implement error formatting
-- [ ] Add context to error reports
-- [ ] Handle webhook failures gracefully
-- [ ] Test embed formatting
-- [ ] Test error categorization
+### Phase 7: Error Logging System (Prompt 7)
+- [x] Create KV-based error logger service
+- [x] Implement multiple log levels (error, warning, info)
+- [x] Add context and stack trace capture
+- [x] Create error retrieval and sorting functionality
+- [x] Add automatic error expiration (30 days)
+- [x] Create error viewer endpoint (/errors)
+- [x] Add test endpoint for error generation (/test-errors)
+- [x] Handle KV failures gracefully with console fallback
+- [x] Test all error logging functionality
 
 ### Phase 8: Core Sync Logic (Prompt 8)
 - [ ] Create sync service
