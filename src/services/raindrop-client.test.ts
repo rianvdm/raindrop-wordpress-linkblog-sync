@@ -43,7 +43,8 @@ describe('RaindropClient', () => {
       );
 
       expect(result).toHaveLength(2);
-      expect(result[0]._id).toBe('123456789');
+      expect(result[0]._id).toBe('987654321'); // Newest item first (2024-01-02)
+      expect(result[1]._id).toBe('123456789'); // Older item second (2024-01-01)
       expect(result[0].tags).toContain('blog');
     });
 
@@ -203,7 +204,7 @@ describe('RaindropClient', () => {
 
       const callUrl = mockFetch.mock.calls[0][0] as string;
       expect(callUrl).toContain('search=%23test-tag');
-      expect(callUrl).toContain('sort=created');
+      expect(callUrl).toContain('sort=-created'); // Updated to expect descending sort
       expect(callUrl).toContain('perpage=50');
     });
   });

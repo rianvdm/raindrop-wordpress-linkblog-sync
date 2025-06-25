@@ -11,7 +11,7 @@ export class RaindropClient {
       // Build query parameters
       const params: Record<string, string | number | boolean | undefined> = {
         search: `#${tag}`,
-        sort: 'created',
+        sort: '-created', // Sort by creation date descending (newest first)
         perpage: 50, // Fetch up to 50 items per page
       };
 
@@ -68,14 +68,20 @@ export class RaindropClient {
 
       // If we have a since date, also filter by created date
       // This is a double-check since the API should handle it
+      let filteredItems = taggedItems;
       if (since) {
-        return taggedItems.filter(item => {
+        filteredItems = taggedItems.filter(item => {
           const itemDate = new Date(item.created);
           return itemDate > since;
         });
       }
 
-      return taggedItems;
+      // Sort by creation date descending (newest first) as a final guarantee
+      return filteredItems.sort((a, b) => {
+        const dateA = new Date(a.created);
+        const dateB = new Date(b.created);
+        return dateB.getTime() - dateA.getTime(); // Descending order
+      });
     } catch (error) {
       if (error instanceof RaindropError) {
         throw error;
