@@ -1,3 +1,5 @@
+// ABOUTME: Mock KV namespace implementation for testing that simulates Cloudflare KV behavior.
+// ABOUTME: Provides in-memory storage with TTL support and proper async interfaces for unit tests.
 import { KVNamespace } from '@cloudflare/workers-types';
 
 interface StoredValue {

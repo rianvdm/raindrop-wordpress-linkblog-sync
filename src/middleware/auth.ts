@@ -1,3 +1,5 @@
+// ABOUTME: Authentication middleware that validates API tokens for protected endpoints.
+// ABOUTME: Provides token-based security to prevent unauthorized access to sync and admin functions.
 import { Env } from '../types/env';
 
 export function requireAuth(env: Env) {

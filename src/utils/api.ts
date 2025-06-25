@@ -1,3 +1,5 @@
+// ABOUTME: API utilities for building query strings and handling external service interactions.
+// ABOUTME: Provides helper functions for Raindrop API communication and date formatting.
 export const RAINDROP_API_BASE = 'https://api.raindrop.io/rest/v1';
 
 export function buildQueryString(params: Record<string, string | number | boolean | undefined>): string {

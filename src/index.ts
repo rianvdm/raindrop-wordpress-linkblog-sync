@@ -1,3 +1,5 @@
+// ABOUTME: Main Cloudflare Worker entry point that handles HTTP requests and routes them to appropriate endpoints.
+// ABOUTME: Provides test endpoints for Raindrop and WordPress API connections, error logging, and sync triggering.
 import { Router } from './router';
 import { requireAuth } from './middleware/auth';
 import { jsonResponse, errorResponse } from './utils/response';

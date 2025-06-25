@@ -1,3 +1,5 @@
+// ABOUTME: Test fixtures for WordPress API requests and responses used in unit tests.
+// ABOUTME: Provides mock post data and payloads that match the WordPress REST API structure.
 import { WordPressPost, CreatePostPayload } from '../../types/wordpress';
 
 export const mockCreatePostPayload: CreatePostPayload = {

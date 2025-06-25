@@ -1,3 +1,5 @@
+// ABOUTME: WordPress REST API client that creates link posts with retry logic and authentication.
+// ABOUTME: Handles post creation with proper formatting and robust error handling for reliable publishing.
 import { WordPressPost, CreatePostPayload, WordPressError } from '../types/wordpress';
 import { retryWithBackoff } from '../utils/retry';
 

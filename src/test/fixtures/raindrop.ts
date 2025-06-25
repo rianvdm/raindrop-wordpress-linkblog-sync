@@ -1,3 +1,5 @@
+// ABOUTME: Test fixtures for Raindrop API responses and bookmark data used in unit tests.
+// ABOUTME: Provides realistic mock data that matches the actual Raindrop.io API structure.
 import { RaindropItem, RaindropResponse } from '../../types/raindrop';
 
 export const mockRaindropItem: RaindropItem = {

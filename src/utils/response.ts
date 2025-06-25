@@ -1,3 +1,5 @@
+// ABOUTME: HTTP response utilities for creating standardized JSON responses with proper headers.
+// ABOUTME: Provides consistent response formatting for API endpoints including CORS and error handling.
 export function jsonResponse(data: any, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,

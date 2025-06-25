@@ -1,3 +1,5 @@
+// ABOUTME: Retry utility with exponential backoff for handling transient failures in external API calls.
+// ABOUTME: Configurable retry logic that distinguishes between retryable and permanent errors.
 export interface RetryOptions {
   maxRetries: number;
   baseDelay: number;

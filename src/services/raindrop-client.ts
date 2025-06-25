@@ -1,3 +1,5 @@
+// ABOUTME: Raindrop.io API client that fetches bookmarks with specific tags and date filtering.
+// ABOUTME: Handles authentication and provides methods to retrieve bookmarks for syncing to WordPress.
 import { RaindropItem, RaindropResponse, RaindropError } from '../types/raindrop';
 import { RAINDROP_API_BASE, buildQueryString, formatDateForRaindrop } from '../utils/api';
 

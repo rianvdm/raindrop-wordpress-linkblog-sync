@@ -1,3 +1,5 @@
+// ABOUTME: Markdown processor that converts CommonMark text to HTML with proper formatting and safety.
+// ABOUTME: Configured with typography features and link handling for rich content rendering.
 import MarkdownIt from 'markdown-it';
 
 export class MarkdownProcessor {

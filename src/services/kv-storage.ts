@@ -1,3 +1,5 @@
+// ABOUTME: KV storage service that manages sync state and deduplication data for the bookmark sync process.
+// ABOUTME: Tracks last fetch timestamps and posted item IDs to prevent duplicate WordPress posts.
 import { KVNamespace } from '@cloudflare/workers-types';
 import { LastFetchData, PostedItemData, KV_KEYS, POSTED_ITEM_TTL } from '../types/kv';
 import { getPostedItemKey, serializeJSON, deserializeJSON } from '../utils/kv';

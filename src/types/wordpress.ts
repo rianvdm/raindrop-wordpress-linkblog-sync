@@ -1,3 +1,5 @@
+// ABOUTME: WordPress REST API type definitions for posts, creation payloads, and error responses.
+// ABOUTME: Defines data structures for WordPress post management and API communication.
 export interface WordPressPost {
   id: number;
   date: string;

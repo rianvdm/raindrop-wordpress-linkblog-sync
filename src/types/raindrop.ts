@@ -1,3 +1,5 @@
+// ABOUTME: Raindrop.io API type definitions for bookmark items, responses, and error handling.
+// ABOUTME: Defines the structure of bookmark data received from the Raindrop API for processing.
 export interface RaindropItem {
   _id: string;
   title: string;

@@ -1,3 +1,5 @@
+// ABOUTME: Simple HTTP router that matches URL paths to handler functions for GET/POST requests.
+// ABOUTME: Supports parameterized routes and provides a clean interface for registering endpoint handlers.
 export type RouteHandler = (request: Request) => Promise<Response> | Response;
 
 export interface Route {

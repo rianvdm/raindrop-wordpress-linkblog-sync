@@ -1,3 +1,5 @@
+// ABOUTME: Link post formatter that creates WordPress-compatible HTML for bookmark content.
+// ABOUTME: Combines markdown content with properly formatted link references for link-style blog posts.
 export function formatLinkPost(content: string, title: string, url: string): string {
   // Start with the processed content (already HTML from markdown)
   let formattedContent = content.trim();

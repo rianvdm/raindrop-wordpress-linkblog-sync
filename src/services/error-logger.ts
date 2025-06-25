@@ -1,3 +1,5 @@
+// ABOUTME: KV-based error logging service that captures application errors, warnings, and info messages.
+// ABOUTME: Stores structured logs with context data and automatic expiration for operational monitoring.
 export interface ErrorLog {
   timestamp: string;
   level: 'error' | 'warning' | 'info';
