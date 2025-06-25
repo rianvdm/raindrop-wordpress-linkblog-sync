@@ -27,7 +27,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run tests
-        run: npx vitest --run
+        run: npm test -- --run
 
   deploy:
     runs-on: ubuntu-latest
