@@ -71,7 +71,7 @@ export class SyncOrchestrator {
 
       // Step 2: Fetch new bookmarks from Raindrop
       const tag = options.tag || 'blog';
-      const bookmarks = await this.fetchNewBookmarks(tag, lastFetchTime, options.limit);
+      const bookmarks = await this.fetchNewBookmarks(tag, lastFetchTime || undefined, options.limit);
       result.itemsProcessed = bookmarks.length;
 
       await this.logger.logInfo('Fetched bookmarks from Raindrop', {
@@ -217,7 +217,7 @@ export class SyncOrchestrator {
       const post = await this.wordpressClient.createPost(payload);
 
       // Mark as posted
-      await this.storage.markItemAsPosted(bookmark._id, post.id);
+      await this.storage.markItemAsPosted(bookmark._id);
 
       await this.logger.logInfo('Successfully created WordPress post', {
         bookmarkId: bookmark._id,

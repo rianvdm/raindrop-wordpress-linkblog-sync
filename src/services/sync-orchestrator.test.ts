@@ -102,7 +102,7 @@ describe('SyncOrchestrator', () => {
         status: 'publish',
         format: 'link',
       });
-      expect(mockStorage.markItemAsPosted).toHaveBeenCalledWith('new-bookmark-1', mockWordPressPost.id);
+      expect(mockStorage.markItemAsPosted).toHaveBeenCalledWith('new-bookmark-1');
       expect(mockStorage.setLastFetchTime).toHaveBeenCalled();
     });
 
@@ -162,7 +162,7 @@ describe('SyncOrchestrator', () => {
 
       const result = await orchestrator.performSync({ tag: 'custom', limit: 2 });
 
-      expect(mockRaindropClient.fetchBookmarks).toHaveBeenCalledWith('custom', null);
+      expect(mockRaindropClient.fetchBookmarks).toHaveBeenCalledWith('custom', undefined);
       expect(result.itemsProcessed).toBe(2); // Limited to 2
     });
 
@@ -227,7 +227,7 @@ describe('SyncOrchestrator', () => {
       mockRaindropClient.fetchBookmarks.mockResolvedValue([bookmark1, bookmark2]);
       mockStorage.isItemPosted.mockResolvedValue(false);
       mockContentBuilder.buildPostContent.mockReturnValue('<p>Test content</p>');
-      mockWordPressClient.createPost.mockImplementation((payload) => {
+      mockWordPressClient.createPost.mockImplementation((payload: any) => {
         if (payload.title === 'Bad Bookmark') {
           throw new Error('WordPress error');
         }
