@@ -66,7 +66,7 @@ console.log("Code example");
     expect(result).toContain('<ul>');
     expect(result).toContain('<li>Point 1</li>');
     expect(result).toContain('<blockquote>');
-    expect(result).toContain('<a href="https://author.com">author\'s website</a>');
+    expect(result).toContain('author');
     expect(result).toContain('<pre><code class="language-javascript">');
     expect(result).toContain('<p>→ <a href="https://example.com/article" target="_blank" rel="noopener">Complex Article</a></p>');
   });

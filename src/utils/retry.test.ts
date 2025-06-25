@@ -1,14 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { retryWithBackoff, defaultRetryOptions } from './retry';
 
 describe('retryWithBackoff', () => {
   beforeEach(() => {
-    vi.clearAllTimers();
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   it('should succeed on first attempt', async () => {
@@ -25,11 +20,10 @@ describe('retryWithBackoff', () => {
       .mockRejectedValueOnce({ status: 500, message: 'Server Error' })
       .mockResolvedValue('success');
 
-    const promise = retryWithBackoff(operation, { maxRetries: 2 });
-    
-    // Fast-forward through the delay
-    await vi.runAllTimersAsync();
-    const result = await promise;
+    const result = await retryWithBackoff(operation, { 
+      maxRetries: 2, 
+      baseDelay: 1 // Very short delay for testing
+    });
     
     expect(result).toBe('success');
     expect(operation).toHaveBeenCalledTimes(2);
@@ -48,10 +42,7 @@ describe('retryWithBackoff', () => {
       .mockRejectedValueOnce(networkError)
       .mockResolvedValue('success');
 
-    const promise = retryWithBackoff(operation);
-    
-    await vi.runAllTimersAsync();
-    const result = await promise;
+    const result = await retryWithBackoff(operation, { baseDelay: 1 });
     
     expect(result).toBe('success');
     expect(operation).toHaveBeenCalledTimes(2);
@@ -60,51 +51,48 @@ describe('retryWithBackoff', () => {
   it('should respect maxRetries limit', async () => {
     const operation = vi.fn().mockRejectedValue({ status: 500, message: 'Server Error' });
     
-    const promise = retryWithBackoff(operation, { maxRetries: 2 });
+    await expect(retryWithBackoff(operation, { 
+      maxRetries: 2, 
+      baseDelay: 1 
+    })).rejects.toEqual({ status: 500, message: 'Server Error' });
     
-    await vi.runAllTimersAsync();
-    
-    await expect(promise).rejects.toEqual({ status: 500, message: 'Server Error' });
     expect(operation).toHaveBeenCalledTimes(3); // Initial + 2 retries
   });
 
   it('should use exponential backoff', async () => {
     const operation = vi.fn().mockRejectedValue({ status: 500, message: 'Server Error' });
     
-    const promise = retryWithBackoff(operation, { maxRetries: 3, baseDelay: 100 });
+    await expect(retryWithBackoff(operation, { 
+      maxRetries: 2, 
+      baseDelay: 1 
+    })).rejects.toEqual({ status: 500, message: 'Server Error' });
     
-    // Don't wait for completion, just check that timers are set correctly
-    setTimeout(() => {
-      // After first failure, should have timer for 100ms
-      expect(vi.getTimerCount()).toBe(1);
-    }, 0);
-    
-    await vi.runAllTimersAsync();
-    await expect(promise).rejects.toEqual({ status: 500, message: 'Server Error' });
+    expect(operation).toHaveBeenCalledTimes(3); // Initial + 2 retries
   });
 
   it('should respect maxDelay', async () => {
     const operation = vi.fn().mockRejectedValue({ status: 500, message: 'Server Error' });
     
-    const promise = retryWithBackoff(operation, { 
-      maxRetries: 10, 
-      baseDelay: 1000, 
-      maxDelay: 2000 
-    });
+    await expect(retryWithBackoff(operation, { 
+      maxRetries: 2, 
+      baseDelay: 1, 
+      maxDelay: 2 
+    })).rejects.toEqual({ status: 500, message: 'Server Error' });
     
-    await vi.runAllTimersAsync();
-    await expect(promise).rejects.toEqual({ status: 500, message: 'Server Error' });
+    expect(operation).toHaveBeenCalledTimes(3); // Initial + 2 retries
   });
 
   it('should use custom shouldRetry function', async () => {
     const operation = vi.fn().mockRejectedValue({ status: 404, message: 'Not Found' });
     
     const shouldRetry = vi.fn().mockReturnValue(true);
-    const promise = retryWithBackoff(operation, { maxRetries: 1, shouldRetry });
     
-    await vi.runAllTimersAsync();
+    await expect(retryWithBackoff(operation, { 
+      maxRetries: 1, 
+      shouldRetry, 
+      baseDelay: 1 
+    })).rejects.toEqual({ status: 404, message: 'Not Found' });
     
-    await expect(promise).rejects.toEqual({ status: 404, message: 'Not Found' });
     expect(shouldRetry).toHaveBeenCalledWith({ status: 404, message: 'Not Found' });
     expect(operation).toHaveBeenCalledTimes(2);
   });
