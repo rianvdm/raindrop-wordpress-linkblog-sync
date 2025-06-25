@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.8.46",
     "@cloudflare/workers-types": "^4.20250620.0",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.0.4",
