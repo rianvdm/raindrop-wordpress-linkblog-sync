@@ -3,6 +3,8 @@
 import { Router } from "./router";
 import { requireAuth } from "./middleware/auth";
 import { jsonResponse, errorResponse } from "./utils/response";
+import { SyncOrchestrator } from "./services/sync-orchestrator";
+import { ErrorLogger } from "./services/error-logger";
 import { Env } from "./types/env";
 
 export default {
@@ -249,6 +251,62 @@ export default {
     } catch (error) {
       console.error("Error handling request:", error);
       return errorResponse("Internal Server Error");
+    }
+  },
+
+  async scheduled(
+    event: ScheduledEvent,
+    env: Env,
+    _ctx: ExecutionContext
+  ): Promise<void> {
+    const startTime = Date.now();
+    const logger = new ErrorLogger(env.SYNC_STATE);
+
+    try {
+      await logger.logInfo("Starting scheduled sync", {
+        cron: event.cron,
+        scheduledTime: new Date(event.scheduledTime).toISOString(),
+      });
+
+      console.log("Starting scheduled sync:", {
+        cron: event.cron,
+        scheduledTime: new Date(event.scheduledTime).toISOString(),
+      });
+
+      // Execute the sync using the same orchestrator as manual triggers
+      const orchestrator = new SyncOrchestrator(env);
+
+      const result = await orchestrator.performSync({
+        dryRun: false,
+        tag: env.RAINDROP_TAG,
+        limit: undefined,
+      });
+
+      const duration = Date.now() - startTime;
+
+      await logger.logInfo("Scheduled sync completed successfully", {
+        cron: event.cron,
+        duration: `${duration}ms`,
+        result,
+      });
+
+      console.log("Scheduled sync completed:", {
+        duration: `${duration}ms`,
+        result,
+      });
+    } catch (error) {
+      const duration = Date.now() - startTime;
+
+      await logger.logError(error as Error, {
+        operation: "scheduled-sync",
+        cron: event.cron,
+        duration: `${duration}ms`,
+      });
+
+      console.error("Scheduled sync failed:", error);
+
+      // Don't throw - let the cron continue running on schedule
+      // The error is logged for monitoring
     }
   },
 };

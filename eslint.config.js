@@ -25,6 +25,7 @@ export default [
         setTimeout: "readonly",
         KVNamespace: "readonly",
         ExecutionContext: "readonly",
+        ScheduledEvent: "readonly",
         global: "readonly",
       },
     },

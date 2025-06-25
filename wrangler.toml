@@ -10,6 +10,9 @@ preview_id = "b5960ba20661492b920ce691d32478d9"
 [vars]
 RAINDROP_TAG = "blog"
 
+[triggers]
+crons = ["0 * * * *"]  # Run every hour at minute 0 for automatic sync
+
 # Production secrets (configured via wrangler secret put):
 # - RAINDROP_TOKEN ✓
 # - WP_USERNAME ✓  
