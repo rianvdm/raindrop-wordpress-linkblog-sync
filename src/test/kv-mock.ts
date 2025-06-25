@@ -1,5 +1,7 @@
 // ABOUTME: Mock KV namespace implementation for testing that simulates Cloudflare KV behavior.
 // ABOUTME: Provides in-memory storage with TTL support and proper async interfaces for unit tests.
+// Used for type reference in tests
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { KVNamespace } from "@cloudflare/workers-types";
 
 interface StoredValue {
@@ -51,13 +53,13 @@ export class MockKVNamespace {
     this.store.delete(key);
   }
 
-  async list(options?: any): Promise<any> {
+  async list(_options?: any): Promise<any> {
     const keys = Array.from(this.store.keys());
     return { keys: keys.map(name => ({ name })) };
   }
 
   // Methods not implemented for testing
-  async getWithMetadata(key: string, type?: any): Promise<any> {
+  async getWithMetadata(key: string, _type?: any): Promise<any> {
     const stored = this.store.get(key);
     if (!stored) return { value: null, metadata: null };
 

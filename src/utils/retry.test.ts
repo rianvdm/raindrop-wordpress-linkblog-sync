@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { retryWithBackoff, defaultRetryOptions } from "./retry";
+import { retryWithBackoff } from "./retry";
 
 describe("retryWithBackoff", () => {
   beforeEach(() => {

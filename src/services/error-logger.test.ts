@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { ErrorLogger, ErrorLog } from "./error-logger";
+import { ErrorLogger } from "./error-logger";
 
 describe("ErrorLogger", () => {
   let logger: ErrorLogger;

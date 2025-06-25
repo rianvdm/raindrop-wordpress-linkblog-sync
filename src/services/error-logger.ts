@@ -107,7 +107,7 @@ export class ErrorLogger {
               deletedCount++;
             }
           }
-        } catch (parseError) {
+        } catch {
           // Delete unparseable entries
           await this.kv.delete(key.name);
           deletedCount++;
