@@ -13,9 +13,24 @@ export default {
   ): Promise<Response> {
     const router = new Router();
 
-    // Add the /trigger endpoint with authentication
-    router.get('/trigger', requireAuth(env)(async () => {
-      return jsonResponse({ message: 'Sync triggered successfully' });
+    // Add the /trigger endpoint with authentication to perform sync
+    router.get('/trigger', requireAuth(env)(async (request) => {
+      try {
+        const url = new URL(request.url);
+        const dryRun = url.searchParams.get('dry_run') === 'true';
+        const tag = url.searchParams.get('tag') || undefined;
+        const limitParam = url.searchParams.get('limit');
+        const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
+        const { SyncOrchestrator } = await import('./services/sync-orchestrator');
+        const orchestrator = new SyncOrchestrator(env, { dryRun });
+        
+        const result = await orchestrator.performSync({ tag, limit });
+        
+        return jsonResponse(result);
+      } catch (error: any) {
+        return errorResponse(`Sync failed: ${error.message}`, 500);
+      }
     }));
 
     // Add a test endpoint to validate Raindrop connection

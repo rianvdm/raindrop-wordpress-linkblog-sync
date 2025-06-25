@@ -39,7 +39,14 @@ describe('Worker', () => {
 
     expect(response.status).toBe(200);
     const json = await response.json();
-    expect(json).toEqual({ message: 'Sync triggered successfully' });
+    // In test environment, sync will fail due to invalid API tokens, but endpoint should work
+    expect(json).toHaveProperty('success');
+    expect(json).toHaveProperty('itemsProcessed');
+    expect(json).toHaveProperty('itemsPosted');
+    expect(json).toHaveProperty('itemsSkipped');
+    expect(json).toHaveProperty('errors');
+    expect(json).toHaveProperty('dryRun');
+    expect(json).toHaveProperty('duration');
   });
 
   it('should reject invalid token for /trigger endpoint', async () => {
