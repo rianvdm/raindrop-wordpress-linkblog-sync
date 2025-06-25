@@ -14,9 +14,13 @@
   "description": "",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250620.0",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.0.4",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4",
     "wrangler": "^4.21.2"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0"
   }
 }

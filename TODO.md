@@ -66,24 +66,24 @@
 - [x] Test error scenarios
 
 ### Phase 5: WordPress API Client (Prompt 5)
-- [ ] Define WordPress post types
-- [ ] Create API client class
-- [ ] Implement post creation
-- [ ] Add Basic Auth header generation
-- [ ] Implement retry logic with exponential backoff
-- [ ] Test successful post creation
-- [ ] Test retry on failures
-- [ ] Test authentication
+- [x] Define WordPress post types
+- [x] Create API client class
+- [x] Implement post creation
+- [x] Add Basic Auth header generation
+- [x] Implement retry logic with exponential backoff
+- [x] Test successful post creation
+- [x] Test retry on failures
+- [x] Test authentication
 
 ### Phase 6: Markdown Processing (Prompt 6)
-- [ ] Install markdown-it dependency
-- [ ] Create markdown processor service
-- [ ] Implement CommonMark parsing
-- [ ] Create link formatter utility
-- [ ] Build content builder service
-- [ ] Test various markdown inputs
-- [ ] Test link formatting
-- [ ] Test HTML safety
+- [x] Install markdown-it dependency
+- [x] Create markdown processor service
+- [x] Implement CommonMark parsing
+- [x] Create link formatter utility
+- [x] Build content builder service
+- [x] Test various markdown inputs
+- [x] Test link formatting
+- [x] Test HTML safety
 
 ### Phase 7: Discord Error Reporter (Prompt 7)
 - [ ] Define Discord webhook types

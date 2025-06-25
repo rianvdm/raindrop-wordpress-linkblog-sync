@@ -8,6 +8,9 @@ describe('Auth Middleware', () => {
     SYNC_STATE: {} as KVNamespace,
     RAINDROP_TOKEN: 'raindrop-token',
     RAINDROP_TAG: 'blog',
+    WP_ENDPOINT: 'https://example.com/wp-json/wp/v2/posts',
+    WP_USERNAME: 'testuser',
+    WP_APP_PASSWORD: 'testpass',
   };
 
   it('should allow requests with valid token', async () => {
