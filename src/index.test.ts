@@ -5,6 +5,8 @@ describe('Worker', () => {
   const mockEnv: Env = {
     SYNC_STATE: {} as KVNamespace,
     TRIGGER_TOKEN: 'test-token',
+    RAINDROP_TOKEN: 'raindrop-token',
+    RAINDROP_TAG: 'blog',
   };
 
   const mockCtx = {

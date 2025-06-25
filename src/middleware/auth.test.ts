@@ -6,6 +6,8 @@ describe('Auth Middleware', () => {
   const mockEnv: Env = {
     TRIGGER_TOKEN: 'secret-token',
     SYNC_STATE: {} as KVNamespace,
+    RAINDROP_TOKEN: 'raindrop-token',
+    RAINDROP_TAG: 'blog',
   };
 
   it('should allow requests with valid token', async () => {
