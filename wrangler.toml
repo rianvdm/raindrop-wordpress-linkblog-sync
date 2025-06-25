@@ -8,8 +8,11 @@ id = "9ece47fdd41548f7ad9e20b1c493adda"
 preview_id = "b5960ba20661492b920ce691d32478d9"
 
 [vars]
-TRIGGER_TOKEN = "development-token"
 RAINDROP_TAG = "blog"
 
-# Secrets (set via wrangler secret put):
-# - RAINDROP_TOKEN (configured)
+# Production secrets (configured via wrangler secret put):
+# - RAINDROP_TOKEN ✓
+# - WP_USERNAME ✓  
+# - WP_APP_PASSWORD ✓
+# - WP_ENDPOINT ✓
+# - TRIGGER_TOKEN ✓ (overrides vars.TRIGGER_TOKEN in production)
