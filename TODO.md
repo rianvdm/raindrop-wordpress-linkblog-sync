@@ -34,17 +34,17 @@
 - [x] Create basic worker with "Hello World" response
 - [x] Set up test framework
 - [x] Verify tests pass
-- [ ] Verify `npm run dev` works
+- [x] Verify `npm run dev` works
 
 ### Phase 2: Request Router & Security (Prompt 2)
-- [ ] Implement Router class
-- [ ] Add /trigger endpoint
-- [ ] Implement token-based authentication
-- [ ] Add security middleware
-- [ ] Create response utilities
-- [ ] Add CORS headers
-- [ ] Test authentication flow
-- [ ] Test 403 responses for invalid tokens
+- [x] Implement Router class
+- [x] Add /trigger endpoint
+- [x] Implement token-based authentication
+- [x] Add security middleware
+- [x] Create response utilities
+- [x] Add CORS headers
+- [x] Test authentication flow
+- [x] Test 403 responses for invalid tokens
 
 ### Phase 3: KV Storage Layer (Prompt 3)
 - [ ] Create KV namespace in Cloudflare dashboard

@@ -5,3 +5,6 @@ compatibility_date = "2024-01-01"
 [[kv_namespaces]]
 binding = "SYNC_STATE"
 id = "YOUR_KV_NAMESPACE_ID"
+
+[vars]
+TRIGGER_TOKEN = "development-token"

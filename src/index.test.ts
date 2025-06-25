@@ -1,21 +1,55 @@
 import { describe, it, expect } from 'vitest';
-import worker from './index';
+import worker, { Env } from './index';
 
 describe('Worker', () => {
-  it('should return Hello World', async () => {
-    const request = new Request('http://localhost');
-    const env = {
-      SYNC_STATE: {} as KVNamespace,
-    };
-    const ctx = {
-      waitUntil: () => {},
-      passThroughOnException: () => {},
-    } as unknown as ExecutionContext;
+  const mockEnv: Env = {
+    SYNC_STATE: {} as KVNamespace,
+    TRIGGER_TOKEN: 'test-token',
+  };
 
-    const response = await worker.fetch(request, env, ctx);
-    const text = await response.text();
+  const mockCtx = {
+    waitUntil: () => {},
+    passThroughOnException: () => {},
+  } as unknown as ExecutionContext;
+
+  it('should return 404 for unknown routes', async () => {
+    const request = new Request('http://localhost/unknown');
+    const response = await worker.fetch(request, mockEnv, mockCtx);
+
+    expect(response.status).toBe(404);
+    expect(await response.text()).toBe('Not Found');
+  });
+
+  it('should require auth for /trigger endpoint', async () => {
+    const request = new Request('http://localhost/trigger');
+    const response = await worker.fetch(request, mockEnv, mockCtx);
+
+    expect(response.status).toBe(403);
+    expect(await response.text()).toBe('Forbidden');
+  });
+
+  it('should accept valid token for /trigger endpoint', async () => {
+    const request = new Request('http://localhost/trigger?token=test-token');
+    const response = await worker.fetch(request, mockEnv, mockCtx);
 
     expect(response.status).toBe(200);
-    expect(text).toBe('Hello World');
+    const json = await response.json();
+    expect(json).toEqual({ message: 'Sync triggered successfully' });
+  });
+
+  it('should reject invalid token for /trigger endpoint', async () => {
+    const request = new Request('http://localhost/trigger?token=wrong-token');
+    const response = await worker.fetch(request, mockEnv, mockCtx);
+
+    expect(response.status).toBe(403);
+    expect(await response.text()).toBe('Forbidden');
+  });
+
+  it('should include CORS headers in responses', async () => {
+    const request = new Request('http://localhost/trigger?token=test-token');
+    const response = await worker.fetch(request, mockEnv, mockCtx);
+
+    expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
+    expect(response.headers.get('Content-Type')).toBe('application/json');
   });
 });
