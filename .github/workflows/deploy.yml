@@ -26,6 +26,12 @@ jobs:
       - name: Run type check
         run: npx tsc --noEmit
 
+      - name: Run linter
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
       - name: Run tests
         run: npx vitest --run
 

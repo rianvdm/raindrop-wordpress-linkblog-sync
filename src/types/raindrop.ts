@@ -27,6 +27,6 @@ export class RaindropError extends Error {
     public response?: any
   ) {
     super(message);
-    this.name = 'RaindropError';
+    this.name = "RaindropError";
   }
 }

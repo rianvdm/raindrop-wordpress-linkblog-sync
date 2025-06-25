@@ -1,12 +1,12 @@
 // ABOUTME: Core sync orchestrator that coordinates the entire bookmark-to-WordPress sync process.
 // ABOUTME: Manages fetching, deduplication, post creation, and state tracking with dry-run support.
-import { RaindropClient } from './raindrop-client';
-import { WordPressClient } from './wordpress-client';
-import { KVStorageService } from './kv-storage';
-import { ContentBuilder } from './content-builder';
-import { ErrorLogger } from './error-logger';
-import { RaindropItem } from '../types/raindrop';
-import { Env } from '../types/env';
+import { RaindropClient } from "./raindrop-client";
+import { WordPressClient } from "./wordpress-client";
+import { KVStorageService } from "./kv-storage";
+import { ContentBuilder } from "./content-builder";
+import { ErrorLogger } from "./error-logger";
+import { RaindropItem } from "../types/raindrop";
+import { Env } from "../types/env";
 
 export interface SyncResult {
   success: boolean;
@@ -35,11 +35,15 @@ export class SyncOrchestrator {
 
   constructor(env: Env, options: SyncOptions = {}) {
     this.raindropClient = new RaindropClient(env.RAINDROP_TOKEN);
-    this.wordpressClient = new WordPressClient(env.WP_ENDPOINT, env.WP_USERNAME, env.WP_APP_PASSWORD);
+    this.wordpressClient = new WordPressClient(
+      env.WP_ENDPOINT,
+      env.WP_USERNAME,
+      env.WP_APP_PASSWORD
+    );
     this.storage = new KVStorageService(env.SYNC_STATE);
     this.contentBuilder = new ContentBuilder();
     this.logger = new ErrorLogger(env.SYNC_STATE);
-    this.isDryRun = options.dryRun || env.DRY_RUN === 'true';
+    this.isDryRun = options.dryRun || env.DRY_RUN === "true";
   }
 
   async performSync(options: SyncOptions = {}): Promise<SyncResult> {
@@ -51,11 +55,11 @@ export class SyncOrchestrator {
       itemsSkipped: 0,
       errors: [],
       dryRun: this.isDryRun,
-      duration: '0ms',
+      duration: "0ms",
     };
 
     try {
-      await this.logger.logInfo('Starting sync process', {
+      await this.logger.logInfo("Starting sync process", {
         dryRun: this.isDryRun,
         tag: options.tag,
         limit: options.limit,
@@ -65,16 +69,20 @@ export class SyncOrchestrator {
       const lastFetchTime = await this.storage.getLastFetchTime();
       result.lastFetchTime = lastFetchTime?.toISOString();
 
-      await this.logger.logInfo('Retrieved last fetch time', {
+      await this.logger.logInfo("Retrieved last fetch time", {
         lastFetchTime: result.lastFetchTime,
       });
 
       // Step 2: Fetch new bookmarks from Raindrop
-      const tag = options.tag || 'blog';
-      const bookmarks = await this.fetchNewBookmarks(tag, lastFetchTime || undefined, options.limit);
+      const tag = options.tag || "blog";
+      const bookmarks = await this.fetchNewBookmarks(
+        tag,
+        lastFetchTime || undefined,
+        options.limit
+      );
       result.itemsProcessed = bookmarks.length;
 
-      await this.logger.logInfo('Fetched bookmarks from Raindrop', {
+      await this.logger.logInfo("Fetched bookmarks from Raindrop", {
         count: bookmarks.length,
         tag,
       });
@@ -83,7 +91,7 @@ export class SyncOrchestrator {
       const newBookmarks = await this.filterNewBookmarks(bookmarks);
       result.itemsSkipped = result.itemsProcessed - newBookmarks.length;
 
-      await this.logger.logInfo('Filtered duplicate bookmarks', {
+      await this.logger.logInfo("Filtered duplicate bookmarks", {
         total: bookmarks.length,
         new: newBookmarks.length,
         skipped: result.itemsSkipped,
@@ -100,7 +108,7 @@ export class SyncOrchestrator {
           const errorMsg = `Failed to process bookmark ${bookmark._id}: ${error.message}`;
           result.errors.push(errorMsg);
           await this.logger.logError(error, {
-            operation: 'process-bookmark',
+            operation: "process-bookmark",
             bookmarkId: bookmark._id,
             bookmarkTitle: bookmark.title,
           });
@@ -111,7 +119,7 @@ export class SyncOrchestrator {
       if (!this.isDryRun && result.errors.length === 0) {
         const newFetchTime = new Date();
         await this.storage.setLastFetchTime(newFetchTime);
-        await this.logger.logInfo('Updated last fetch timestamp', {
+        await this.logger.logInfo("Updated last fetch timestamp", {
           timestamp: newFetchTime.toISOString(),
         });
       }
@@ -119,7 +127,7 @@ export class SyncOrchestrator {
       result.success = result.errors.length === 0;
       result.duration = `${Date.now() - startTime}ms`;
 
-      await this.logger.logInfo('Sync process completed', {
+      await this.logger.logInfo("Sync process completed", {
         success: result.success,
         itemsProcessed: result.itemsProcessed,
         itemsPosted: result.itemsPosted,
@@ -136,7 +144,7 @@ export class SyncOrchestrator {
       result.errors.push(`Sync failed: ${error.message}`);
 
       await this.logger.logError(error, {
-        operation: 'sync-orchestrator',
+        operation: "sync-orchestrator",
         duration: result.duration,
       });
 
@@ -144,19 +152,23 @@ export class SyncOrchestrator {
     }
   }
 
-  private async fetchNewBookmarks(tag: string, since?: Date, limit?: number): Promise<RaindropItem[]> {
+  private async fetchNewBookmarks(
+    tag: string,
+    since?: Date,
+    limit?: number
+  ): Promise<RaindropItem[]> {
     try {
       const bookmarks = await this.raindropClient.fetchBookmarks(tag, since);
-      
+
       // Apply limit if specified
       if (limit && limit > 0) {
         return bookmarks.slice(0, limit);
       }
-      
+
       return bookmarks;
     } catch (error: any) {
       await this.logger.logError(error, {
-        operation: 'fetch-bookmarks',
+        operation: "fetch-bookmarks",
         tag,
         since: since?.toISOString(),
         limit,
@@ -165,7 +177,9 @@ export class SyncOrchestrator {
     }
   }
 
-  private async filterNewBookmarks(bookmarks: RaindropItem[]): Promise<RaindropItem[]> {
+  private async filterNewBookmarks(
+    bookmarks: RaindropItem[]
+  ): Promise<RaindropItem[]> {
     const newBookmarks: RaindropItem[] = [];
 
     for (const bookmark of bookmarks) {
@@ -176,10 +190,13 @@ export class SyncOrchestrator {
         }
       } catch (error: any) {
         // If we can't check, err on the side of processing it
-        await this.logger.logWarning(`Failed to check if item ${bookmark._id} was posted, including it`, {
-          bookmarkId: bookmark._id,
-          error: error.message,
-        });
+        await this.logger.logWarning(
+          `Failed to check if item ${bookmark._id} was posted, including it`,
+          {
+            bookmarkId: bookmark._id,
+            error: error.message,
+          }
+        );
         newBookmarks.push(bookmark);
       }
     }
@@ -197,7 +214,7 @@ export class SyncOrchestrator {
       );
 
       if (this.isDryRun) {
-        await this.logger.logInfo('DRY RUN: Would create WordPress post', {
+        await this.logger.logInfo("DRY RUN: Would create WordPress post", {
           bookmarkId: bookmark._id,
           title: bookmark.title,
           link: bookmark.link,
@@ -210,8 +227,8 @@ export class SyncOrchestrator {
       const payload = {
         title: bookmark.title,
         content,
-        status: 'publish' as const,
-        format: 'link' as const,
+        status: "publish" as const,
+        format: "link" as const,
       };
 
       const post = await this.wordpressClient.createPost(payload);
@@ -219,7 +236,7 @@ export class SyncOrchestrator {
       // Mark as posted
       await this.storage.markItemAsPosted(bookmark._id);
 
-      await this.logger.logInfo('Successfully created WordPress post', {
+      await this.logger.logInfo("Successfully created WordPress post", {
         bookmarkId: bookmark._id,
         postId: post.id,
         title: bookmark.title,
@@ -230,7 +247,7 @@ export class SyncOrchestrator {
       return true;
     } catch (error: any) {
       await this.logger.logError(error, {
-        operation: 'process-bookmark',
+        operation: "process-bookmark",
         bookmarkId: bookmark._id,
         title: bookmark.title,
         link: bookmark.link,

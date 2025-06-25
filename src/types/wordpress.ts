@@ -10,7 +10,7 @@ export interface WordPressPost {
   modified: string;
   modified_gmt: string;
   slug: string;
-  status: 'publish' | 'draft' | 'pending' | 'private';
+  status: "publish" | "draft" | "pending" | "private";
   type: string;
   link: string;
   title: {
@@ -30,7 +30,17 @@ export interface WordPressPost {
   ping_status: string;
   sticky: boolean;
   template: string;
-  format: 'standard' | 'aside' | 'chat' | 'gallery' | 'link' | 'image' | 'quote' | 'status' | 'video' | 'audio';
+  format:
+    | "standard"
+    | "aside"
+    | "chat"
+    | "gallery"
+    | "link"
+    | "image"
+    | "quote"
+    | "status"
+    | "video"
+    | "audio";
   meta: any[];
   categories: number[];
   tags: number[];
@@ -39,8 +49,18 @@ export interface WordPressPost {
 export interface CreatePostPayload {
   title: string;
   content: string;
-  status: 'publish' | 'draft';
-  format: 'standard' | 'aside' | 'chat' | 'gallery' | 'link' | 'image' | 'quote' | 'status' | 'video' | 'audio';
+  status: "publish" | "draft";
+  format:
+    | "standard"
+    | "aside"
+    | "chat"
+    | "gallery"
+    | "link"
+    | "image"
+    | "quote"
+    | "status"
+    | "video"
+    | "audio";
   excerpt?: string;
   categories?: number[];
   tags?: number[];
@@ -55,6 +75,6 @@ export class WordPressError extends Error {
     public data?: any
   ) {
     super(message);
-    this.name = 'WordPressError';
+    this.name = "WordPressError";
   }
 }

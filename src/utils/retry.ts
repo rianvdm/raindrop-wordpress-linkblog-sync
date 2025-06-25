@@ -13,7 +13,7 @@ export const defaultRetryOptions: RetryOptions = {
   maxDelay: 10000, // 10 seconds
   shouldRetry: (error: any) => {
     // Retry on network errors or 5xx server errors
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+    if (error.name === "TypeError" && error.message.includes("fetch")) {
       return true; // Network error
     }
     if (error.status >= 500 && error.status < 600) {
@@ -21,7 +21,7 @@ export const defaultRetryOptions: RetryOptions = {
     }
     // Don't retry on 4xx client errors (auth, validation, etc.)
     return false;
-  }
+  },
 };
 
 export async function retryWithBackoff<T>(
@@ -53,8 +53,11 @@ export async function retryWithBackoff<T>(
         config.maxDelay
       );
 
-      console.log(`Attempt ${attempt + 1} failed, retrying in ${delay}ms:`, error instanceof Error ? error.message : String(error));
-      
+      console.log(
+        `Attempt ${attempt + 1} failed, retrying in ${delay}ms:`,
+        error instanceof Error ? error.message : String(error)
+      );
+
       // Wait before retrying
       await new Promise(resolve => setTimeout(resolve, delay));
     }

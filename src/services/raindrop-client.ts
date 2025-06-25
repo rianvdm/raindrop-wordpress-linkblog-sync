@@ -1,7 +1,15 @@
 // ABOUTME: Raindrop.io API client that fetches bookmarks with specific tags and date filtering.
 // ABOUTME: Handles authentication and provides methods to retrieve bookmarks for syncing to WordPress.
-import { RaindropItem, RaindropResponse, RaindropError } from '../types/raindrop';
-import { RAINDROP_API_BASE, buildQueryString, formatDateForRaindrop } from '../utils/api';
+import {
+  RaindropItem,
+  RaindropResponse,
+  RaindropError,
+} from "../types/raindrop";
+import {
+  RAINDROP_API_BASE,
+  buildQueryString,
+  formatDateForRaindrop,
+} from "../utils/api";
 
 export class RaindropClient {
   constructor(private token: string) {}
@@ -11,24 +19,24 @@ export class RaindropClient {
       // Build query parameters
       const params: Record<string, string | number | boolean | undefined> = {
         search: `#${tag}`,
-        sort: '-created', // Sort by creation date descending (newest first)
+        sort: "-created", // Sort by creation date descending (newest first)
         perpage: 50, // Fetch up to 50 items per page
       };
 
       // Add date filter if provided
       if (since) {
         // Raindrop API uses created:>YYYY-MM-DD format for date filtering
-        const dateStr = formatDateForRaindrop(since).split('T')[0];
+        const dateStr = formatDateForRaindrop(since).split("T")[0];
         params.search = `${params.search} created:>${dateStr}`;
       }
 
       const url = `${RAINDROP_API_BASE}/raindrops/0${buildQueryString(params)}`;
 
       const response = await fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${this.token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
         },
       });
 
@@ -43,21 +51,30 @@ export class RaindropClient {
       const data: RaindropResponse = await response.json();
 
       if (!data.result) {
-        throw new RaindropError('Raindrop API returned unsuccessful result', undefined, data);
+        throw new RaindropError(
+          "Raindrop API returned unsuccessful result",
+          undefined,
+          data
+        );
       }
 
       // Validate response structure
       if (!Array.isArray(data.items)) {
-        throw new RaindropError('Invalid response structure: items is not an array', undefined, data);
+        throw new RaindropError(
+          "Invalid response structure: items is not an array",
+          undefined,
+          data
+        );
       }
 
       // Filter items to ensure they have the required fields
-      const validItems = data.items.filter(item => 
-        item._id && 
-        item.title && 
-        item.link && 
-        item.created &&
-        Array.isArray(item.tags)
+      const validItems = data.items.filter(
+        item =>
+          item._id &&
+          item.title &&
+          item.link &&
+          item.created &&
+          Array.isArray(item.tags)
       );
 
       // Additional filtering by exact tag match (case-insensitive)
@@ -86,12 +103,14 @@ export class RaindropClient {
       if (error instanceof RaindropError) {
         throw error;
       }
-      
+
       if (error instanceof Error) {
         throw new RaindropError(`Failed to fetch bookmarks: ${error.message}`);
       }
 
-      throw new RaindropError('Unknown error occurred while fetching bookmarks');
+      throw new RaindropError(
+        "Unknown error occurred while fetching bookmarks"
+      );
     }
   }
 }

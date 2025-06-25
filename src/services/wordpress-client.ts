@@ -1,7 +1,11 @@
 // ABOUTME: WordPress REST API client that creates link posts with retry logic and authentication.
 // ABOUTME: Handles post creation with proper formatting and robust error handling for reliable publishing.
-import { WordPressPost, CreatePostPayload, WordPressError } from '../types/wordpress';
-import { retryWithBackoff } from '../utils/retry';
+import {
+  WordPressPost,
+  CreatePostPayload,
+  WordPressError,
+} from "../types/wordpress";
+import { retryWithBackoff } from "../utils/retry";
 
 export class WordPressClient {
   private endpoint: string;
@@ -10,7 +14,9 @@ export class WordPressClient {
 
   constructor(endpoint: string, username: string, password: string) {
     // Ensure endpoint ends with posts
-    this.endpoint = endpoint.endsWith('/posts') ? endpoint : `${endpoint}/posts`;
+    this.endpoint = endpoint.endsWith("/posts")
+      ? endpoint
+      : `${endpoint}/posts`;
     this.username = username;
     this.password = password;
   }
@@ -24,10 +30,10 @@ export class WordPressClient {
     return retryWithBackoff(async () => {
       try {
         const response = await fetch(this.endpoint, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Authorization': this.generateAuthHeader(),
-            'Content-Type': 'application/json',
+            Authorization: this.generateAuthHeader(),
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         });
@@ -53,9 +59,9 @@ export class WordPressClient {
         // Validate response has required fields
         if (!post.id || !post.link || !post.title) {
           throw new WordPressError(
-            'Invalid response from WordPress API: missing required fields',
+            "Invalid response from WordPress API: missing required fields",
             undefined,
-            'invalid_response',
+            "invalid_response",
             post
           );
         }
@@ -67,10 +73,14 @@ export class WordPressClient {
         }
 
         if (error instanceof Error) {
-          throw new WordPressError(`Failed to create WordPress post: ${error.message}`);
+          throw new WordPressError(
+            `Failed to create WordPress post: ${error.message}`
+          );
         }
 
-        throw new WordPressError('Unknown error occurred while creating WordPress post');
+        throw new WordPressError(
+          "Unknown error occurred while creating WordPress post"
+        );
       }
     });
   }

@@ -1,12 +1,18 @@
 {
   "name": "raindrop-wordpress-linkblog-sync",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "wrangler dev",
     "test": "vitest",
     "deploy": "wrangler deploy",
-    "types": "tsc --noEmit"
+    "types": "tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -17,11 +23,30 @@
     "@cloudflare/workers-types": "^4.20250620.0",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.0.4",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.1",
+    "eslint-plugin-unicorn": "^59.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.1",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4",
     "wrangler": "^4.21.2"
   },
   "dependencies": {
     "markdown-it": "^14.1.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix --max-warnings 50",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }

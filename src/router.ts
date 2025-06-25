@@ -12,11 +12,11 @@ export class Router {
   private routes: Route[] = [];
 
   get(path: string, handler: RouteHandler): void {
-    this.routes.push({ method: 'GET', path, handler });
+    this.routes.push({ method: "GET", path, handler });
   }
 
   post(path: string, handler: RouteHandler): void {
-    this.routes.push({ method: 'POST', path, handler });
+    this.routes.push({ method: "POST", path, handler });
   }
 
   async handle(request: Request): Promise<Response> {
@@ -30,6 +30,6 @@ export class Router {
       }
     }
 
-    return new Response('Not Found', { status: 404 });
+    return new Response("Not Found", { status: 404 });
   }
 }

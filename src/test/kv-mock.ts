@@ -1,6 +1,6 @@
 // ABOUTME: Mock KV namespace implementation for testing that simulates Cloudflare KV behavior.
 // ABOUTME: Provides in-memory storage with TTL support and proper async interfaces for unit tests.
-import { KVNamespace } from '@cloudflare/workers-types';
+import { KVNamespace } from "@cloudflare/workers-types";
 
 interface StoredValue {
   value: string;
@@ -12,7 +12,10 @@ interface StoredValue {
 export class MockKVNamespace {
   private store: Map<string, StoredValue> = new Map();
 
-  async get(key: string, type?: 'text' | 'json' | 'arrayBuffer' | 'stream'): Promise<any> {
+  async get(
+    key: string,
+    type?: "text" | "json" | "arrayBuffer" | "stream"
+  ): Promise<any> {
     const stored = this.store.get(key);
     if (!stored) return null;
 
@@ -22,7 +25,7 @@ export class MockKVNamespace {
       return null;
     }
 
-    if (type === 'json') {
+    if (type === "json") {
       return JSON.parse(stored.value);
     }
 
@@ -31,12 +34,12 @@ export class MockKVNamespace {
 
   async put(key: string, value: string, options?: any): Promise<void> {
     const stored: StoredValue = { value };
-    
+
     if (options?.expirationTtl) {
       stored.expirationTtl = options.expirationTtl;
-      stored.expiresAt = Date.now() + (options.expirationTtl * 1000);
+      stored.expiresAt = Date.now() + options.expirationTtl * 1000;
     }
-    
+
     if (options?.metadata) {
       stored.metadata = options.metadata;
     }

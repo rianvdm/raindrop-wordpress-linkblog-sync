@@ -11,8 +11,8 @@ export interface PostedItemData {
 
 // KV key patterns
 export const KV_KEYS = {
-  LAST_FETCH: 'raindrop:lastFetched',
-  POSTED_PREFIX: 'raindrop:posted:',
+  LAST_FETCH: "raindrop:lastFetched",
+  POSTED_PREFIX: "raindrop:posted:",
 } as const;
 
 // TTL for posted items (30 days in seconds)
