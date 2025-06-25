@@ -176,6 +176,37 @@ export default {
       }
     }));
 
+    // Add a utility endpoint to reset the last fetch time (for testing/debugging)
+    router.get('/reset-timestamp', requireAuth(env)(async (request) => {
+      try {
+        const { KVStorageService } = await import('./services/kv-storage');
+        const storage = new KVStorageService(env.SYNC_STATE);
+        
+        // Get current timestamp for reference
+        const currentTime = await storage.getLastFetchTime();
+        
+        // Get days parameter (default to 90 days for testing)
+        const url = new URL(request.url);
+        const daysParam = url.searchParams.get('days');
+        const days = daysParam ? parseInt(daysParam, 10) : 90;
+        
+        // Reset to a date in the past
+        const resetDate = new Date();
+        resetDate.setDate(resetDate.getDate() - days);
+        await storage.setLastFetchTime(resetDate);
+        
+        return jsonResponse({
+          success: true,
+          message: `Last fetch timestamp reset to ${days} days ago`,
+          previousTimestamp: currentTime?.toISOString(),
+          newTimestamp: resetDate.toISOString(),
+          daysBack: days
+        });
+      } catch (error: any) {
+        return errorResponse(`Failed to reset timestamp: ${error.message}`, 500);
+      }
+    }));
+
     try {
       return await router.handle(request);
     } catch (error) {
