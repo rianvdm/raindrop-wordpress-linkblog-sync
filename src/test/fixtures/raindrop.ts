@@ -8,6 +8,7 @@ export const mockRaindropItem: RaindropItem = {
   note: "This is a test note with **markdown**",
   link: "https://example.com/test",
   created: "2024-01-01T12:00:00.000Z",
+  lastUpdate: "2024-01-01T12:00:00.000Z",
   tags: ["blog", "test"],
   type: "link",
   excerpt: "Test excerpt",
@@ -23,6 +24,7 @@ export const mockRaindropResponse: RaindropResponse = {
       note: "Another note",
       link: "https://example.com/another",
       created: "2024-01-02T12:00:00.000Z",
+      lastUpdate: "2024-01-02T12:00:00.000Z",
       tags: ["blog"],
       type: "link",
     },
@@ -54,6 +56,7 @@ export const mockItemMissingFields: RaindropItem = {
   note: "Note without title",
   link: "", // Empty link
   created: "2024-01-03T12:00:00.000Z",
+  lastUpdate: "2024-01-03T12:00:00.000Z",
   tags: ["blog"],
   type: "link",
 };
