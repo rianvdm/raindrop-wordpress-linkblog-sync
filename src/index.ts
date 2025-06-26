@@ -5,6 +5,8 @@ import { requireAuth } from "./middleware/auth";
 import { jsonResponse, errorResponse } from "./utils/response";
 import { SyncOrchestrator } from "./services/sync-orchestrator";
 import { ErrorLogger } from "./services/error-logger";
+import { getConfig } from "./services/config";
+import { ConfigError } from "./types/config";
 import { Env } from "./types/env";
 
 export default {
@@ -13,6 +15,16 @@ export default {
     env: Env,
     _ctx: ExecutionContext
   ): Promise<Response> {
+    // Initialize configuration with validation
+    try {
+      getConfig(env);
+    } catch (error) {
+      if (error instanceof ConfigError) {
+        return errorResponse(`Configuration error: ${error.message}`, 500);
+      }
+      return errorResponse("Failed to initialize configuration", 500);
+    }
+
     const router = new Router();
 
     // Add the /trigger endpoint with authentication to perform sync
@@ -263,6 +275,9 @@ export default {
     const logger = new ErrorLogger(env.SYNC_STATE);
 
     try {
+      // Initialize configuration with validation
+      const config = getConfig(env);
+
       await logger.logInfo("Starting scheduled sync", {
         cron: event.cron,
         scheduledTime: new Date(event.scheduledTime).toISOString(),
@@ -277,9 +292,9 @@ export default {
       const orchestrator = new SyncOrchestrator(env);
 
       const result = await orchestrator.performSync({
-        dryRun: false,
-        tag: env.RAINDROP_TAG,
-        limit: undefined,
+        dryRun: config.dryRun,
+        tag: config.raindropTag,
+        limit: config.maxItemsPerSync,
       });
 
       const duration = Date.now() - startTime;
@@ -297,13 +312,21 @@ export default {
     } catch (error) {
       const duration = Date.now() - startTime;
 
-      await logger.logError(error as Error, {
-        operation: "scheduled-sync",
-        cron: event.cron,
-        duration: `${duration}ms`,
-      });
-
-      console.error("Scheduled sync failed:", error);
+      if (error instanceof ConfigError) {
+        await logger.logError(error, {
+          operation: "scheduled-sync-config",
+          cron: event.cron,
+          duration: `${duration}ms`,
+        });
+        console.error("Scheduled sync config error:", error.message);
+      } else {
+        await logger.logError(error as Error, {
+          operation: "scheduled-sync",
+          cron: event.cron,
+          duration: `${duration}ms`,
+        });
+        console.error("Scheduled sync failed:", error);
+      }
 
       // Don't throw - let the cron continue running on schedule
       // The error is logged for monitoring
