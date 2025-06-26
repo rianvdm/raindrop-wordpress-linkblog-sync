@@ -105,13 +105,16 @@ export class SyncOrchestrator {
             result.itemsPosted++;
           }
         } catch (error: unknown) {
-          const errorMsg = `Failed to process bookmark ${bookmark._id}: ${error.message}`;
+          const errorMsg = `Failed to process bookmark ${bookmark._id}: ${error instanceof Error ? error.message : String(error)}`;
           result.errors.push(errorMsg);
-          await this.logger.logError(error, {
-            operation: "process-bookmark",
-            bookmarkId: bookmark._id,
-            bookmarkTitle: bookmark.title,
-          });
+          await this.logger.logError(
+            error instanceof Error ? error : new Error(String(error)),
+            {
+              operation: "process-bookmark",
+              bookmarkId: bookmark._id,
+              bookmarkTitle: bookmark.title,
+            }
+          );
         }
       }
 
@@ -141,12 +144,17 @@ export class SyncOrchestrator {
     } catch (error: unknown) {
       result.success = false;
       result.duration = `${Date.now() - startTime}ms`;
-      result.errors.push(`Sync failed: ${error.message}`);
+      result.errors.push(
+        `Sync failed: ${error instanceof Error ? error.message : String(error)}`
+      );
 
-      await this.logger.logError(error, {
-        operation: "sync-orchestrator",
-        duration: result.duration,
-      });
+      await this.logger.logError(
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          operation: "sync-orchestrator",
+          duration: result.duration,
+        }
+      );
 
       return result;
     }
@@ -167,12 +175,15 @@ export class SyncOrchestrator {
 
       return bookmarks;
     } catch (error: unknown) {
-      await this.logger.logError(error, {
-        operation: "fetch-bookmarks",
-        tag,
-        since: since?.toISOString(),
-        limit,
-      });
+      await this.logger.logError(
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          operation: "fetch-bookmarks",
+          tag,
+          since: since?.toISOString(),
+          limit,
+        }
+      );
       throw error;
     }
   }
@@ -194,7 +205,7 @@ export class SyncOrchestrator {
           `Failed to check if item ${bookmark._id} was posted, including it`,
           {
             bookmarkId: bookmark._id,
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
           }
         );
         newBookmarks.push(bookmark);
@@ -246,12 +257,15 @@ export class SyncOrchestrator {
 
       return true;
     } catch (error: unknown) {
-      await this.logger.logError(error, {
-        operation: "process-bookmark",
-        bookmarkId: bookmark._id,
-        title: bookmark.title,
-        link: bookmark.link,
-      });
+      await this.logger.logError(
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          operation: "process-bookmark",
+          bookmarkId: bookmark._id,
+          title: bookmark.title,
+          link: bookmark.link,
+        }
+      );
       throw error;
     }
   }

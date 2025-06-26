@@ -6,6 +6,7 @@ describe("Auth Middleware", () => {
   const mockEnv: Env = {
     TRIGGER_TOKEN: "secret-token",
     SYNC_STATE: {} as KVNamespace,
+    RAINDROP_ERRORS: {} as KVNamespace,
     RAINDROP_TOKEN: "raindrop-token",
     RAINDROP_TAG: "blog",
     WP_ENDPOINT: "https://example.com/wp-json/wp/v2/posts",

@@ -20,7 +20,10 @@ export default {
       getConfig(env);
     } catch (error) {
       if (error instanceof ConfigError) {
-        return errorResponse(`Configuration error: ${error.message}`, 500);
+        return errorResponse(
+          `Configuration error: ${error instanceof Error ? error.message : String(error)}`,
+          500
+        );
       }
       return errorResponse("Failed to initialize configuration", 500);
     }
@@ -84,7 +87,10 @@ export default {
             })),
           });
         } catch (error: unknown) {
-          return errorResponse(`Raindrop API error: ${error.message}`, 500);
+          return errorResponse(
+            `Raindrop API error: ${error instanceof Error ? error.message : String(error)}`,
+            500
+          );
         }
       })
     );
@@ -138,7 +144,10 @@ export default {
             },
           });
         } catch (error: unknown) {
-          return errorResponse(`WordPress API error: ${error.message}`, 500);
+          return errorResponse(
+            `WordPress API error: ${error instanceof Error ? error.message : String(error)}`,
+            500
+          );
         }
       })
     );
@@ -171,7 +180,7 @@ export default {
           });
         } catch (error: unknown) {
           return errorResponse(
-            `Failed to retrieve errors: ${error.message}`,
+            `Failed to retrieve errors: ${error instanceof Error ? error.message : String(error)}`,
             500
           );
         }
@@ -216,7 +225,7 @@ export default {
           });
         } catch (error: unknown) {
           return errorResponse(
-            `Failed to generate test errors: ${error.message}`,
+            `Failed to generate test errors: ${error instanceof Error ? error.message : String(error)}`,
             500
           );
         }
@@ -350,7 +359,10 @@ export default {
           cron: event.cron,
           duration: `${duration}ms`,
         });
-        console.error("Scheduled sync config error:", error.message);
+        console.error(
+          "Scheduled sync config error:",
+          error instanceof Error ? error.message : String(error)
+        );
       } else {
         await logger.logError(error as Error, {
           operation: "scheduled-sync",
