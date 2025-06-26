@@ -162,6 +162,14 @@ Check sync errors and logs:
 curl "https://your-worker.workers.dev/errors?token=your_trigger_token"
 ```
 
+### Clear Error Logs
+
+Clear all error logs from storage:
+
+```bash
+curl -X POST "https://your-worker.workers.dev/clear-errors?token=your_trigger_token"
+```
+
 ## API Endpoints
 
 | Endpoint | Method | Parameters | Description |
@@ -169,6 +177,7 @@ curl "https://your-worker.workers.dev/errors?token=your_trigger_token"
 | `/trigger` | GET | `token`, `dry_run`, `tag`, `limit` | Trigger manual sync |
 | `/reset-timestamp` | POST | `token`, `days` | Reset last sync timestamp |
 | `/errors` | GET | `token` | View error logs |
+| `/clear-errors` | POST | `token` | Clear all error logs |
 
 ## Configuration
 
