@@ -11,7 +11,7 @@ preview_id = "b5960ba20661492b920ce691d32478d9"
 RAINDROP_TAG = "blog"
 
 [triggers]
-crons = ["10 * * * *"]  # Run every hour at minute 10 for automatic sync
+crons = ["25 * * * *"]  # Run every hour at minute 25 for automatic sync
 
 # Production secrets (configured via wrangler secret put):
 # - RAINDROP_TOKEN ✓
