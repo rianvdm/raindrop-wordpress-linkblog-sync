@@ -74,8 +74,7 @@ describe("ConfigService", () => {
 
   describe("required field validation", () => {
     it("should throw error for missing RAINDROP_TOKEN", () => {
-      const config = { ...validConfig };
-      delete config.RAINDROP_TOKEN;
+      const { RAINDROP_TOKEN: _RAINDROP_TOKEN, ...config } = validConfig;
 
       expect(() => configService.parseConfig(config)).toThrow(ConfigError);
       expect(() => configService.parseConfig(config)).toThrow(
@@ -84,8 +83,7 @@ describe("ConfigService", () => {
     });
 
     it("should throw error for missing WP_USERNAME", () => {
-      const config = { ...validConfig };
-      delete config.WP_USERNAME;
+      const { WP_USERNAME: _WP_USERNAME, ...config } = validConfig;
 
       expect(() => configService.parseConfig(config)).toThrow(ConfigError);
       expect(() => configService.parseConfig(config)).toThrow(
@@ -94,8 +92,7 @@ describe("ConfigService", () => {
     });
 
     it("should throw error for missing WP_APP_PASSWORD", () => {
-      const config = { ...validConfig };
-      delete config.WP_APP_PASSWORD;
+      const { WP_APP_PASSWORD: _WP_APP_PASSWORD, ...config } = validConfig;
 
       expect(() => configService.parseConfig(config)).toThrow(ConfigError);
       expect(() => configService.parseConfig(config)).toThrow(
@@ -104,8 +101,7 @@ describe("ConfigService", () => {
     });
 
     it("should throw error for missing WP_ENDPOINT", () => {
-      const config = { ...validConfig };
-      delete config.WP_ENDPOINT;
+      const { WP_ENDPOINT: _WP_ENDPOINT, ...config } = validConfig;
 
       expect(() => configService.parseConfig(config)).toThrow(ConfigError);
       expect(() => configService.parseConfig(config)).toThrow(
@@ -114,8 +110,7 @@ describe("ConfigService", () => {
     });
 
     it("should throw error for missing TRIGGER_TOKEN", () => {
-      const config = { ...validConfig };
-      delete config.TRIGGER_TOKEN;
+      const { TRIGGER_TOKEN: _TRIGGER_TOKEN, ...config } = validConfig;
 
       expect(() => configService.parseConfig(config)).toThrow(ConfigError);
       expect(() => configService.parseConfig(config)).toThrow(
@@ -124,8 +119,7 @@ describe("ConfigService", () => {
     });
 
     it("should throw error for missing RAINDROP_TAG", () => {
-      const config = { ...validConfig };
-      delete config.RAINDROP_TAG;
+      const { RAINDROP_TAG: _RAINDROP_TAG, ...config } = validConfig;
 
       expect(() => configService.parseConfig(config)).toThrow(ConfigError);
       expect(() => configService.parseConfig(config)).toThrow(
@@ -143,9 +137,11 @@ describe("ConfigService", () => {
     });
 
     it("should handle multiple missing fields", () => {
-      const config = { ...validConfig };
-      delete config.RAINDROP_TOKEN;
-      delete config.WP_USERNAME;
+      const {
+        RAINDROP_TOKEN: _RAINDROP_TOKEN,
+        WP_USERNAME: _WP_USERNAME,
+        ...config
+      } = validConfig;
 
       expect(() => configService.parseConfig(config)).toThrow(ConfigError);
       expect(() => configService.parseConfig(config)).toThrow(
