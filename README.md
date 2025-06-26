@@ -130,6 +130,23 @@ curl "https://your-worker.your-subdomain.workers.dev/trigger?token=your_trigger_
 
 ## Usage
 
+### Post Format
+
+When a bookmark is synced, it creates a WordPress post with the "link" format using:
+
+- **Post Title**: Uses the bookmark's title from Raindrop.io
+- **Post Content**: 
+  - Converts the bookmark's note (if any) from Markdown to HTML
+  - Adds a formatted link at the bottom: `→ [Bookmark Title](URL)`
+  - Example output:
+    ```html
+    <p>This is my note about the article, with <strong>markdown</strong> support.</p>
+    <p>→ <a href="https://example.com" target="_blank" rel="noopener">Article Title</a></p>
+    ```
+- **Post Status**: Published immediately (not draft)
+- **Post Format**: Set to "link" for proper theme support
+- **Deduplication**: Prevents creating duplicate posts for the same bookmark
+
 ### Automatic Sync
 
 The worker runs automatically every hour. Tag any bookmark in Raindrop.io with your configured tag and it will be synced to WordPress on the next run.
