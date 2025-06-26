@@ -25,8 +25,8 @@ A Cloudflare Worker that automatically syncs bookmarks from Raindrop.io to WordP
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/your-username/raindrop-wordpress-sync.git
-cd raindrop-wordpress-sync
+git clone https://github.com/your-username/raindrop-wordpress-linkblog-sync.git
+cd raindrop-wordpress-linkblog-sync
 npm install
 ```
 
