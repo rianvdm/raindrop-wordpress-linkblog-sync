@@ -75,6 +75,11 @@ binding = "SYNC_STATE"
 id = "your_kv_namespace_id"
 preview_id = "your_preview_kv_namespace_id"
 
+[[kv_namespaces]]
+binding = "RAINDROP_ERRORS"
+id = "your_error_kv_namespace_id"
+preview_id = "your_error_preview_kv_namespace_id"
+
 [vars]
 RAINDROP_TAG = "your_chosen_tag"  # e.g., "blog"
 
@@ -82,14 +87,16 @@ RAINDROP_TAG = "your_chosen_tag"  # e.g., "blog"
 crons = ["0 * * * *"]  # Run every hour at minute 0
 ```
 
-### 5. Create KV Namespace
+### 5. Create KV Namespaces
 
 ```bash
-# Create production KV namespace
+# Create production KV namespaces
 npx wrangler kv:namespace create "SYNC_STATE"
+npx wrangler kv:namespace create "RAINDROP_ERRORS"
 
-# Create preview KV namespace  
+# Create preview KV namespaces  
 npx wrangler kv:namespace create "SYNC_STATE" --preview
+npx wrangler kv:namespace create "RAINDROP_ERRORS" --preview
 
 # Update the IDs in wrangler.toml with the returned namespace IDs
 ```
