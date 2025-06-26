@@ -7,6 +7,11 @@ binding = "SYNC_STATE"
 id = "9ece47fdd41548f7ad9e20b1c493adda"
 preview_id = "b5960ba20661492b920ce691d32478d9"
 
+[[kv_namespaces]]
+binding = "RAINDROP_ERRORS"
+id = "c1f863ba62214e47a29ff2b2456f71bd"
+preview_id = "f711e72b0a7741d69c99034f7293861d"
+
 [vars]
 RAINDROP_TAG = "blog"
 

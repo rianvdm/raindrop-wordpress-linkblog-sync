@@ -42,7 +42,7 @@ export class SyncOrchestrator {
     );
     this.storage = new KVStorageService(env.SYNC_STATE);
     this.contentBuilder = new ContentBuilder();
-    this.logger = new ErrorLogger(env.SYNC_STATE);
+    this.logger = new ErrorLogger(env.RAINDROP_ERRORS);
     this.isDryRun = options.dryRun || env.DRY_RUN === "true";
   }
 

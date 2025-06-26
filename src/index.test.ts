@@ -4,6 +4,7 @@ import worker, { Env } from "./index";
 describe("Worker", () => {
   const mockEnv: Env = {
     SYNC_STATE: {} as KVNamespace,
+    RAINDROP_ERRORS: {} as KVNamespace,
     TRIGGER_TOKEN: "test-token",
     RAINDROP_TOKEN: "raindrop-token",
     RAINDROP_TAG: "blog",

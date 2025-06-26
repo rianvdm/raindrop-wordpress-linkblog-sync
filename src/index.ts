@@ -147,7 +147,7 @@ export default {
       requireAuth(env)(async request => {
         try {
           const { ErrorLogger } = await import("./services/error-logger");
-          const logger = new ErrorLogger(env.SYNC_STATE);
+          const logger = new ErrorLogger(env.RAINDROP_ERRORS);
 
           const url = new URL(request.url);
           const limitParam = url.searchParams.get("limit");
@@ -182,7 +182,7 @@ export default {
       requireAuth(env)(async () => {
         try {
           const { ErrorLogger } = await import("./services/error-logger");
-          const logger = new ErrorLogger(env.SYNC_STATE);
+          const logger = new ErrorLogger(env.RAINDROP_ERRORS);
 
           // Generate some test errors
           await logger.logError(new Error("Test API connection failure"), {
@@ -217,6 +217,34 @@ export default {
             `Failed to generate test errors: ${error.message}`,
             500
           );
+        }
+      })
+    );
+
+    // Add endpoint to clear all error logs (temporary - remove after use)
+    router.post(
+      "/clear-errors",
+      requireAuth(env)(async () => {
+        try {
+          // Get all error keys directly
+          const list = await env.RAINDROP_ERRORS.list({
+            prefix: "error:",
+            limit: 1000,
+          });
+
+          // Delete each error entry
+          let count = 0;
+          for (const key of list.keys) {
+            await env.RAINDROP_ERRORS.delete(key.name);
+            count++;
+          }
+
+          return jsonResponse({
+            message: "All error logs cleared",
+            count: count,
+          });
+        } catch (error: any) {
+          return errorResponse(`Failed to clear errors: ${error.message}`, 500);
         }
       })
     );
@@ -272,7 +300,7 @@ export default {
     _ctx: ExecutionContext
   ): Promise<void> {
     const startTime = Date.now();
-    const logger = new ErrorLogger(env.SYNC_STATE);
+    const logger = new ErrorLogger(env.RAINDROP_ERRORS);
 
     try {
       // Initialize configuration with validation

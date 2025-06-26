@@ -26,6 +26,7 @@ describe("SyncOrchestrator", () => {
 
     mockEnv = {
       SYNC_STATE: new MockKVNamespace() as any,
+      RAINDROP_ERRORS: new MockKVNamespace() as any,
       TRIGGER_TOKEN: "test-token",
       RAINDROP_TOKEN: "raindrop-token",
       RAINDROP_TAG: "blog",
