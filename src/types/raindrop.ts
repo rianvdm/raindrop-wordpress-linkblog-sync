@@ -6,6 +6,7 @@ export interface RaindropItem {
   note: string;
   link: string;
   created: string; // ISO 8601 timestamp
+  lastUpdate: string; // ISO 8601 timestamp when last modified
   tags: string[];
   type: string;
   cover?: string;

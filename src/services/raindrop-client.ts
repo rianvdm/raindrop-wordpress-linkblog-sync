@@ -83,12 +83,12 @@ export class RaindropClient {
         item.tags.some(t => t.toLowerCase() === tagLower)
       );
 
-      // If we have a since date, also filter by created date
+      // If we have a since date, also filter by lastUpdate date
       // This is a double-check since the API should handle it
       let filteredItems = taggedItems;
       if (since) {
         filteredItems = taggedItems.filter(item => {
-          const itemDate = new Date(item.created);
+          const itemDate = new Date(item.lastUpdate || item.created);
           return itemDate > since;
         });
       }
