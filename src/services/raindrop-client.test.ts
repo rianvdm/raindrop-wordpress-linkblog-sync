@@ -58,8 +58,13 @@ describe("RaindropClient", () => {
       const sinceDate = new Date("2023-12-01T00:00:00Z");
       await client.fetchBookmarks("blog", sinceDate);
 
+      // API no longer filters by date - we only filter client-side
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("search=%23blog%20created%3A%3E2023-12-01"),
+        expect.stringContaining("search=%23blog"),
+        expect.any(Object)
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.not.stringContaining("created%3A%3E"),
         expect.any(Object)
       );
     });

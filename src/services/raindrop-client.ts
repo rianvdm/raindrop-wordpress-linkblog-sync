@@ -5,11 +5,7 @@ import {
   RaindropResponse,
   RaindropError,
 } from "../types/raindrop";
-import {
-  RAINDROP_API_BASE,
-  buildQueryString,
-  formatDateForRaindrop,
-} from "../utils/api";
+import { RAINDROP_API_BASE, buildQueryString } from "../utils/api";
 
 export class RaindropClient {
   constructor(private token: string) {}
@@ -23,12 +19,9 @@ export class RaindropClient {
         perpage: 50, // Fetch up to 50 items per page
       };
 
-      // Add date filter if provided
-      if (since) {
-        // Raindrop API uses created:>YYYY-MM-DD format for date filtering
-        const dateStr = formatDateForRaindrop(since).split("T")[0];
-        params.search = `${params.search} created:>${dateStr}`;
-      }
+      // Note: Raindrop API doesn't support filtering by modification date,
+      // only by creation date. Since we need to catch old bookmarks with new tags,
+      // we'll fetch all bookmarks with the tag and filter by lastUpdate client-side.
 
       const url = `${RAINDROP_API_BASE}/raindrops/0${buildQueryString(params)}`;
 
