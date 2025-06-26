@@ -46,8 +46,10 @@ export default {
           const result = await orchestrator.performSync({ tag, limit });
 
           return jsonResponse(result);
-        } catch (error: any) {
-          return errorResponse(`Sync failed: ${error.message}`, 500);
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          return errorResponse(`Sync failed: ${message}`, 500);
         }
       })
     );
@@ -81,7 +83,7 @@ export default {
               tags: item.tags,
             })),
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
           return errorResponse(`Raindrop API error: ${error.message}`, 500);
         }
       })
@@ -135,7 +137,7 @@ export default {
               link: post.link,
             },
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
           return errorResponse(`WordPress API error: ${error.message}`, 500);
         }
       })
@@ -167,7 +169,7 @@ export default {
               hasStack: !!error.stack,
             })),
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
           return errorResponse(
             `Failed to retrieve errors: ${error.message}`,
             500
@@ -212,7 +214,7 @@ export default {
             message:
               "Generated 4 test log entries (2 errors, 1 warning, 1 info)",
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
           return errorResponse(
             `Failed to generate test errors: ${error.message}`,
             500
@@ -243,8 +245,10 @@ export default {
             message: "All error logs cleared",
             count: count,
           });
-        } catch (error: any) {
-          return errorResponse(`Failed to clear errors: ${error.message}`, 500);
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          return errorResponse(`Failed to clear errors: ${message}`, 500);
         }
       })
     );
@@ -277,9 +281,9 @@ export default {
             newTimestamp: resetDate.toISOString(),
             daysBack: days,
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
           return errorResponse(
-            `Failed to reset timestamp: ${error.message}`,
+            `Failed to reset timestamp: ${error instanceof Error ? error.message : String(error)}`,
             500
           );
         }

@@ -104,7 +104,7 @@ export class SyncOrchestrator {
           if (posted) {
             result.itemsPosted++;
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           const errorMsg = `Failed to process bookmark ${bookmark._id}: ${error.message}`;
           result.errors.push(errorMsg);
           await this.logger.logError(error, {
@@ -138,7 +138,7 @@ export class SyncOrchestrator {
       });
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       result.success = false;
       result.duration = `${Date.now() - startTime}ms`;
       result.errors.push(`Sync failed: ${error.message}`);
@@ -166,7 +166,7 @@ export class SyncOrchestrator {
       }
 
       return bookmarks;
-    } catch (error: any) {
+    } catch (error: unknown) {
       await this.logger.logError(error, {
         operation: "fetch-bookmarks",
         tag,
@@ -188,7 +188,7 @@ export class SyncOrchestrator {
         if (!alreadyPosted) {
           newBookmarks.push(bookmark);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         // If we can't check, err on the side of processing it
         await this.logger.logWarning(
           `Failed to check if item ${bookmark._id} was posted, including it`,
@@ -245,7 +245,7 @@ export class SyncOrchestrator {
       });
 
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       await this.logger.logError(error, {
         operation: "process-bookmark",
         bookmarkId: bookmark._id,
