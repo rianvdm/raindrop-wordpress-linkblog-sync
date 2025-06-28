@@ -195,6 +195,34 @@ export default {
           const { ErrorLogger } = await import("./services/error-logger");
           const logger = new ErrorLogger(env.RAINDROP_ERRORS);
 
+          // Check if KV namespace is available
+          if (!env.RAINDROP_ERRORS) {
+            return errorResponse(
+              "RAINDROP_ERRORS KV namespace not available",
+              500
+            );
+          }
+
+          // Test KV connection by writing and reading a test entry
+          const testKey = `test:${Date.now()}`;
+          try {
+            await env.RAINDROP_ERRORS.put(testKey, "test-value");
+            const testValue = await env.RAINDROP_ERRORS.get(testKey);
+            await env.RAINDROP_ERRORS.delete(testKey);
+
+            if (testValue !== "test-value") {
+              return errorResponse(
+                "KV namespace test failed - could not read back test value",
+                500
+              );
+            }
+          } catch (kvError) {
+            return errorResponse(
+              `KV namespace test failed: ${kvError instanceof Error ? kvError.message : String(kvError)}`,
+              500
+            );
+          }
+
           // Generate some test errors
           await logger.logError(new Error("Test API connection failure"), {
             operation: "raindrop-fetch",
@@ -221,7 +249,7 @@ export default {
           return jsonResponse({
             success: true,
             message:
-              "Generated 4 test log entries (2 errors, 1 warning, 1 info)",
+              "Generated 4 test log entries (2 errors, 1 warning, 1 info) - KV test passed",
           });
         } catch (error: unknown) {
           return errorResponse(
