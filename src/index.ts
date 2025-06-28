@@ -319,16 +319,6 @@ export default {
       // Initialize configuration with validation
       const config = getConfig(env);
 
-      await logger.logInfo("Starting scheduled sync", {
-        cron: event.cron,
-        scheduledTime: new Date(event.scheduledTime).toISOString(),
-      });
-
-      console.log("Starting scheduled sync:", {
-        cron: event.cron,
-        scheduledTime: new Date(event.scheduledTime).toISOString(),
-      });
-
       // Execute the sync using the same orchestrator as manual triggers
       const orchestrator = new SyncOrchestrator(env);
 
@@ -340,15 +330,26 @@ export default {
 
       const duration = Date.now() - startTime;
 
-      await logger.logInfo("Scheduled sync completed successfully", {
-        cron: event.cron,
-        duration: `${duration}ms`,
-        result,
-      });
+      // Only log if there were errors - the orchestrator already logged success
+      if (!result.success) {
+        await logger.logError(
+          new Error("Scheduled sync completed with errors"),
+          {
+            operation: "scheduled-sync",
+            cron: event.cron,
+            duration: `${duration}ms`,
+            result,
+          }
+        );
+      }
 
+      // Keep console.log for local development/debugging
       console.log("Scheduled sync completed:", {
+        success: result.success,
         duration: `${duration}ms`,
-        result,
+        itemsProcessed: result.itemsProcessed,
+        itemsPosted: result.itemsPosted,
+        errors: result.errors.length,
       });
     } catch (error) {
       const duration = Date.now() - startTime;

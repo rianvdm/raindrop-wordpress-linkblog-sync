@@ -59,19 +59,9 @@ export class SyncOrchestrator {
     };
 
     try {
-      await this.logger.logInfo("Starting sync process", {
-        dryRun: this.isDryRun,
-        tag: options.tag,
-        limit: options.limit,
-      });
-
       // Step 1: Get last sync timestamp
       const lastFetchTime = await this.storage.getLastFetchTime();
       result.lastFetchTime = lastFetchTime?.toISOString();
-
-      await this.logger.logInfo("Retrieved last fetch time", {
-        lastFetchTime: result.lastFetchTime,
-      });
 
       // Step 2: Fetch new bookmarks from Raindrop
       const tag = options.tag || "blog";
@@ -82,20 +72,9 @@ export class SyncOrchestrator {
       );
       result.itemsProcessed = bookmarks.length;
 
-      await this.logger.logInfo("Fetched bookmarks from Raindrop", {
-        count: bookmarks.length,
-        tag,
-      });
-
       // Step 3: Filter out already posted items
       const newBookmarks = await this.filterNewBookmarks(bookmarks);
       result.itemsSkipped = result.itemsProcessed - newBookmarks.length;
-
-      await this.logger.logInfo("Filtered duplicate bookmarks", {
-        total: bookmarks.length,
-        new: newBookmarks.length,
-        skipped: result.itemsSkipped,
-      });
 
       // Step 4: Process each new bookmark
       for (const bookmark of newBookmarks) {
@@ -122,23 +101,34 @@ export class SyncOrchestrator {
       if (!this.isDryRun && result.errors.length === 0) {
         const newFetchTime = new Date();
         await this.storage.setLastFetchTime(newFetchTime);
-        await this.logger.logInfo("Updated last fetch timestamp", {
-          timestamp: newFetchTime.toISOString(),
-        });
       }
 
       result.success = result.errors.length === 0;
       result.duration = `${Date.now() - startTime}ms`;
 
-      await this.logger.logInfo("Sync process completed", {
-        success: result.success,
-        itemsProcessed: result.itemsProcessed,
-        itemsPosted: result.itemsPosted,
-        itemsSkipped: result.itemsSkipped,
-        errors: result.errors.length,
-        duration: result.duration,
-        dryRun: result.dryRun,
-      });
+      // Only log a single success message if everything went well
+      if (result.success) {
+        await this.logger.logInfo("Sync completed successfully", {
+          itemsProcessed: result.itemsProcessed,
+          itemsPosted: result.itemsPosted,
+          itemsSkipped: result.itemsSkipped,
+          duration: result.duration,
+          dryRun: result.dryRun,
+          tag: options.tag,
+        });
+      } else {
+        // Log detailed error summary when there are failures
+        await this.logger.logError(new Error("Sync completed with errors"), {
+          operation: "sync-orchestrator",
+          itemsProcessed: result.itemsProcessed,
+          itemsPosted: result.itemsPosted,
+          itemsSkipped: result.itemsSkipped,
+          errorCount: result.errors.length,
+          duration: result.duration,
+          dryRun: result.dryRun,
+          tag: options.tag,
+        });
+      }
 
       return result;
     } catch (error: unknown) {
@@ -153,6 +143,8 @@ export class SyncOrchestrator {
         {
           operation: "sync-orchestrator",
           duration: result.duration,
+          tag: options.tag,
+          dryRun: this.isDryRun,
         }
       );
 
@@ -225,12 +217,7 @@ export class SyncOrchestrator {
       );
 
       if (this.isDryRun) {
-        await this.logger.logInfo("DRY RUN: Would create WordPress post", {
-          bookmarkId: bookmark._id,
-          title: bookmark.title,
-          link: bookmark.link,
-          contentLength: content.length,
-        });
+        // In dry run mode, we don't log individual items processed
         return true;
       }
 
@@ -242,19 +229,12 @@ export class SyncOrchestrator {
         format: "link" as const,
       };
 
-      const post = await this.wordpressClient.createPost(payload);
+      await this.wordpressClient.createPost(payload);
 
       // Mark as posted
       await this.storage.markItemAsPosted(bookmark._id);
 
-      await this.logger.logInfo("Successfully created WordPress post", {
-        bookmarkId: bookmark._id,
-        postId: post.id,
-        title: bookmark.title,
-        link: bookmark.link,
-        wpUrl: post.link,
-      });
-
+      // Don't log individual successful posts - only the summary at the end
       return true;
     } catch (error: unknown) {
       await this.logger.logError(
