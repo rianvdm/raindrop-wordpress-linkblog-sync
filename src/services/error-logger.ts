@@ -45,7 +45,7 @@ export class ErrorLogger {
       };
 
       // Store with timestamp-based key for chronological ordering
-      const key = `error:${timestamp}:${Math.random().toString(36).substr(2, 9)}`;
+      const key = `error:${timestamp}:${Math.random().toString(36).substring(2, 11)}`;
       await this.kv.put(key, JSON.stringify(errorLog), {
         expirationTtl: 30 * 24 * 60 * 60, // Keep errors for 30 days
       });
