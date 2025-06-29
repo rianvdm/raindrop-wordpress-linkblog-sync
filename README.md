@@ -1,5 +1,13 @@
 # Raindrop to WordPress Sync
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/rianvdm/raindrop-wordpress-linkblog-sync)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange.svg)](https://workers.cloudflare.com/)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg)](https://nodejs.org/)
+[![Raindrop.io](https://img.shields.io/badge/Raindrop.io-API-6B46C1.svg)](https://developer.raindrop.io/)
+[![WordPress](https://img.shields.io/badge/WordPress-REST_API-21759B.svg)](https://developer.wordpress.org/rest-api/)
+
 A Cloudflare Worker that automatically syncs bookmarks from Raindrop.io to WordPress as link posts. Tag a bookmark with your configured tag in Raindrop, and it will automatically appear as a WordPress post with proper formatting and metadata.
 
 ## Features
