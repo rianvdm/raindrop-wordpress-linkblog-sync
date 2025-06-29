@@ -72,9 +72,23 @@ export class ErrorLogger {
           const value = await this.kv.get(key.name);
           if (value) {
             errors.push(JSON.parse(value));
+          } else {
+            console.error("Empty value for key:", key.name);
           }
         } catch (parseError) {
-          console.error("Failed to parse error log:", parseError);
+          console.error(
+            "Failed to parse error log for key:",
+            key.name,
+            "Error:",
+            parseError
+          );
+          // Also log the raw value to see what we're trying to parse
+          try {
+            const rawValue = await this.kv.get(key.name);
+            console.error("Raw value:", rawValue);
+          } catch (e) {
+            console.error("Failed to get raw value:", e);
+          }
         }
       }
 

@@ -132,7 +132,9 @@ describe("ErrorLogger", () => {
 
       expect(errors).toEqual([]);
       expect(consoleSpy).toHaveBeenCalledWith(
-        "Failed to parse error log:",
+        "Failed to parse error log for key:",
+        expect.any(String),
+        "Error:",
         expect.any(Error)
       );
       consoleSpy.mockRestore();
