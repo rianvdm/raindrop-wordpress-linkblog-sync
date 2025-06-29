@@ -299,6 +299,62 @@ export default {
       })
     );
 
+    // Add debug endpoint to directly check KV values
+    router.get(
+      "/debug-errors",
+      requireAuth(env)(async () => {
+        try {
+          const list = await env.RAINDROP_ERRORS.list({
+            prefix: "error:",
+            limit: 10,
+          });
+
+          const debugInfo: any[] = [];
+
+          for (const key of list.keys) {
+            try {
+              const value = await env.RAINDROP_ERRORS.get(key.name);
+              let parsed = null;
+              let parseError = null;
+
+              if (value) {
+                try {
+                  parsed = JSON.parse(value);
+                } catch (e) {
+                  parseError = e instanceof Error ? e.message : String(e);
+                }
+              }
+
+              debugInfo.push({
+                key: key.name,
+                hasValue: !!value,
+                valueType: typeof value,
+                valueLength: value ? value.length : 0,
+                firstChars: value ? value.substring(0, 100) : null,
+                parsed: !!parsed,
+                parseError,
+              });
+            } catch (error) {
+              debugInfo.push({
+                key: key.name,
+                error: error instanceof Error ? error.message : String(error),
+              });
+            }
+          }
+
+          return jsonResponse({
+            success: true,
+            totalKeys: list.keys.length,
+            debugInfo,
+          });
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          return errorResponse(`Failed to debug errors: ${message}`, 500);
+        }
+      })
+    );
+
     // Add a utility endpoint to reset the last fetch time (for testing/debugging)
     router.get(
       "/reset-timestamp",
