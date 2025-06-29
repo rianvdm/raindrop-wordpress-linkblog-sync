@@ -14,10 +14,16 @@
     "format:check": "prettier --check src/",
     "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "cloudflare-workers",
+    "raindrop",
+    "wordpress",
+    "sync",
+    "linkblog"
+  ],
+  "author": "Rian van der Merwe",
+  "license": "MIT",
+  "description": "Cloudflare Worker that syncs Raindrop.io bookmarks to WordPress",
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.8.46",
     "@cloudflare/workers-types": "^4.20250620.0",
