@@ -370,6 +370,39 @@ export default {
       })
     );
 
+    // Add endpoint to clean up any error entries from SYNC_STATE
+    router.post(
+      "/clean-sync-state-errors",
+      requireAuth(env)(async () => {
+        try {
+          // Get all error keys from SYNC_STATE
+          const list = await env.SYNC_STATE.list({
+            prefix: "error:",
+            limit: 1000,
+          });
+
+          // Delete each error entry
+          let count = 0;
+          for (const key of list.keys) {
+            await env.SYNC_STATE.delete(key.name);
+            count++;
+          }
+
+          return jsonResponse({
+            message: "All error entries removed from SYNC_STATE",
+            count: count,
+          });
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          return errorResponse(
+            `Failed to clean SYNC_STATE errors: ${message}`,
+            500
+          );
+        }
+      })
+    );
+
     // Add a utility endpoint to reset the last fetch time (for testing/debugging)
     router.get(
       "/reset-timestamp",
