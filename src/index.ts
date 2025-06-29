@@ -304,14 +304,18 @@ export default {
       "/debug-errors",
       requireAuth(env)(async () => {
         try {
-          const list = await env.RAINDROP_ERRORS.list({
+          // First, let's check ALL keys in the namespace
+          const allList = await env.RAINDROP_ERRORS.list({ limit: 100 });
+
+          // Then get keys with error: prefix
+          const errorList = await env.RAINDROP_ERRORS.list({
             prefix: "error:",
             limit: 10,
           });
 
           const debugInfo: any[] = [];
 
-          for (const key of list.keys) {
+          for (const key of errorList.keys) {
             try {
               const value = await env.RAINDROP_ERRORS.get(key.name);
               let parsed = null;
@@ -342,9 +346,29 @@ export default {
             }
           }
 
+          // Also test writing and reading
+          const testKey = `error:test:${Date.now()}`;
+          let writeTest = "failed";
+          try {
+            await env.RAINDROP_ERRORS.put(
+              testKey,
+              JSON.stringify({ test: true })
+            );
+            const testRead = await env.RAINDROP_ERRORS.get(testKey);
+            if (testRead) {
+              writeTest = "success";
+              await env.RAINDROP_ERRORS.delete(testKey);
+            }
+          } catch (e) {
+            writeTest = e instanceof Error ? e.message : String(e);
+          }
+
           return jsonResponse({
             success: true,
-            totalKeys: list.keys.length,
+            totalAllKeys: allList.keys.length,
+            allKeysSample: allList.keys.slice(0, 5).map(k => k.name),
+            totalErrorKeys: errorList.keys.length,
+            writeTest,
             debugInfo,
           });
         } catch (error: unknown) {
