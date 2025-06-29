@@ -64,10 +64,13 @@ export class ErrorLogger {
 
   async getRecentErrors(limit = 50): Promise<ErrorLog[]> {
     try {
-      const list = await this.kv.list({ prefix: "error:", limit });
+      // Get all keys and filter client-side since prefix search isn't working
+      const list = await this.kv.list({ limit: 1000 });
+      const errorKeys = list.keys.filter(key => key.name.startsWith("error:"));
       const errors: ErrorLog[] = [];
 
-      for (const key of list.keys) {
+      // Process up to 'limit' error keys
+      for (const key of errorKeys.slice(0, limit)) {
         try {
           const value = await this.kv.get(key.name);
           if (value) {

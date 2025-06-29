@@ -164,20 +164,11 @@ export default {
           const limitParam = url.searchParams.get("limit");
           const limit = limitParam ? parseInt(limitParam, 10) : 50;
 
-          // Add debugging: check what keys exist in KV
-          const list = await env.RAINDROP_ERRORS.list({
-            prefix: "error:",
-            limit: 100,
-          });
-          const keyCount = list.keys.length;
-
           const errors = await logger.getRecentErrors(Math.min(limit, 100)); // Cap at 100
 
           return jsonResponse({
             success: true,
             count: errors.length,
-            keyCount: keyCount, // Add this for debugging
-            sampleKeys: list.keys.slice(0, 3).map(k => k.name), // Show first 3 keys
             errors: errors.map(error => ({
               timestamp: error.timestamp,
               level: error.level,
