@@ -18,7 +18,7 @@ describe("ContentBuilder", () => {
     expect(result).toContain("<h1>Heading</h1>");
     expect(result).toContain("<strong>bold</strong>");
     expect(result).toContain(
-      '<p>→ <a href="https://example.com" target="_blank" rel="noopener">Example Post</a></p>'
+      '<p>Read <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
     );
   });
 
@@ -30,7 +30,7 @@ describe("ContentBuilder", () => {
     const result = builder.buildPostContent(note, title, link);
 
     expect(result).toBe(
-      '<p>→ <a href="https://example.com" target="_blank" rel="noopener">Example Post</a></p>'
+      '<p>Read <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
     );
   });
 
@@ -42,7 +42,7 @@ describe("ContentBuilder", () => {
     const result = builder.buildPostContent(note, title, link);
 
     expect(result).toBe(
-      '<p>→ <a href="https://example.com" target="_blank" rel="noopener">Example Post</a></p>'
+      '<p>Read <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
     );
   });
 
@@ -75,7 +75,7 @@ console.log("Code example");
     expect(result).toContain("author");
     expect(result).toContain('<pre><code class="language-javascript">');
     expect(result).toContain(
-      '<p>→ <a href="https://example.com/article" target="_blank" rel="noopener">Complex Article</a></p>'
+      '<p>Read <a href="https://example.com/article" target="_blank" rel="noopener">Complex Article</a> &#x2197;</p>'
     );
   });
 
