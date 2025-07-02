@@ -150,7 +150,7 @@ When a bookmark is synced, it creates a WordPress post with the "link" format us
   - Example output:
     ```html
     <p>This is my note about the article, with <strong>markdown</strong> support.</p>
-    <p>Read <a href="https://example.com" target="_blank" rel="noopener">Article Title</a> &#x2197;</p>
+    <p>Read <a href="https://example.com" target="_blank" rel="noopener">Article Title</a> ↗</p>
     ```
 - **Post Status**: Published immediately (not draft)
 - **Post Format**: Set to "link" for proper theme support
