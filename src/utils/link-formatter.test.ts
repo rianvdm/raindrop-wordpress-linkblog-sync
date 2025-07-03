@@ -11,7 +11,7 @@ describe("formatLinkPost", () => {
 
     expect(result).toContain("<p>This is some content</p>");
     expect(result).toContain(
-      '<p>Read <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
+      '<p>Source: <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
     );
   });
 
@@ -23,7 +23,7 @@ describe("formatLinkPost", () => {
     const result = formatLinkPost(content, title, url);
 
     expect(result).toBe(
-      '<p>Read <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
+      '<p>Source: <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
     );
   });
 
@@ -47,7 +47,7 @@ describe("formatLinkPost", () => {
 
     const result = formatLinkPost(content, title, url);
 
-    expect(result).toContain("<p>Second paragraph</p>\n<p>Read");
+    expect(result).toContain("<p>Second paragraph</p>\n<p>Source:");
   });
 
   it("should handle content not ending with paragraph", () => {
@@ -57,7 +57,7 @@ describe("formatLinkPost", () => {
 
     const result = formatLinkPost(content, title, url);
 
-    expect(result).toContain("Plain text content\n\n<p>Read");
+    expect(result).toContain("Plain text content\n\n<p>Source:");
   });
 
   it("should handle special characters in URL", () => {
@@ -91,6 +91,6 @@ describe("formatLinkPost", () => {
 
     const result = formatLinkPost(content, title, url);
 
-    expect(result).toContain("<p>Content with whitespace</p>\n<p>Read");
+    expect(result).toContain("<p>Content with whitespace</p>\n<p>Source:");
   });
 });
