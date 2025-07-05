@@ -11,7 +11,7 @@ describe("formatLinkPost", () => {
 
     expect(result).toContain("<p>This is some content</p>");
     expect(result).toContain(
-      '<p>Source: <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
+      '<p>Source: <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> →</p>'
     );
   });
 
@@ -23,7 +23,7 @@ describe("formatLinkPost", () => {
     const result = formatLinkPost(content, title, url);
 
     expect(result).toBe(
-      '<p>Source: <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> &#x2197;</p>'
+      '<p>Source: <a href="https://example.com" target="_blank" rel="noopener">Example Post</a> →</p>'
     );
   });
 
