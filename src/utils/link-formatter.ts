@@ -16,7 +16,7 @@ export function formatLinkPost(
   }
 
   // Add the link in the WordPress standard format for link posts
-  formattedContent += `<p>Source: <a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(title)}</a> &#x2197;</p>`;
+  formattedContent += `<p>Source: <a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(title)}</a> →</p>`;
 
   return formattedContent;
 }
