@@ -43,7 +43,9 @@ export class WordPressClient {
           try {
             errorData = await response.json();
           } catch {
-            errorData = { message: await response.text() };
+            // Clone the response to avoid "Body has already been used" error
+            const clonedResponse = response.clone();
+            errorData = { message: await clonedResponse.text() };
           }
 
           throw new WordPressError(

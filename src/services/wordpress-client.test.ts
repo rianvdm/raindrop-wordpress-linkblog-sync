@@ -128,6 +128,7 @@ describe("WordPressClient", () => {
         statusText: "Bad Request",
         json: vi.fn().mockRejectedValue(new Error("Invalid JSON")),
         text: vi.fn().mockResolvedValue("Server error occurred"),
+        clone: vi.fn().mockReturnThis(),
       } as unknown as Response;
 
       mockFetch.mockResolvedValue(mockResponse);
