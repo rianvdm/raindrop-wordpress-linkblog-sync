@@ -34,6 +34,7 @@ export class WordPressClient {
           headers: {
             Authorization: this.generateAuthHeader(),
             "Content-Type": "application/json",
+            "User-Agent": "RaindropWordPressSync/1.0 (Automated Link Sync Bot)",
           },
           body: JSON.stringify(payload),
         });
