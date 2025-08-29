@@ -15,8 +15,8 @@ preview_id = "f711e72b0a7741d69c99034f7293861d"
 [vars]
 RAINDROP_TAG = "blog"
 
-[triggers]
-crons = ["25 * * * *"] 
+# [triggers]
+# crons = ["25 * * * *"] 
 
 # Production secrets (configured via wrangler secret put):
 # - RAINDROP_TOKEN ✓
